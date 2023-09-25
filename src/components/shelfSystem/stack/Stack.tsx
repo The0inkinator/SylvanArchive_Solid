@@ -4,6 +4,7 @@ import { createSignal, createEffect, onMount, onCleanup, For } from "solid-js";
 import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
+import { useStackMapContext } from "../../../context/StackMapContext";
 
 interface StackInputs {
   stackRef: string;
@@ -45,6 +46,8 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
     useBinderStateContext();
   const [stackState, { changeActiveStack, queueStack, addToStackCount }]: any =
     useStackStateContext();
+  const [stackMap]: any = useStackMapContext();
+
   //State for slide function
   const [distanceToSlide, setDistanceToSlide] = createSignal<number>(0);
   const [canSlide, setCanSlide] = createSignal<boolean>(false);
@@ -94,39 +97,24 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
       setStackCollision({ left: collisionLeft, right: collisionRight });
     }
 
-    createEffect(async () => {
-      try {
-        const stackData = await fetch(
-          `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/stack_map/*/address/'${stackFrom}'`
-        );
-        const stackInfoJson = await stackData.json();
-        const stackInfo = await stackInfoJson[0];
-
-        const childBindersData = await fetch(
-          `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/binder_map/*/parent_stack/'${stackInfo.address}'`
-        );
-
-        const childBinders = await childBindersData.json();
-
-        setNewMapList(childBinders);
-        setDefaults();
-      } catch (err) {
-        console.error(err);
-      }
-    });
-
     // createEffect(async () => {
     //   try {
-    //     const stackPathData = await fetch(
-    //       `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/api/data/stacks${stackFrom}`
+    //     const stackData = await fetch(
+    //       `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/stack_map/*/address/'${stackFrom}'`
+    //     );
+    //     const stackInfoJson = await stackData.json();
+    //     const stackInfo = await stackInfoJson[0];
+
+    //     const childBindersData = await fetch(
+    //       `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/binder_map/*/parent_stack/'${stackInfo.address}'`
     //     );
 
-    //     const stackPath = await stackPathData.json();
+    //     const childBinders = await childBindersData.json();
 
-    //     setNewMapList(stackPath);
+    //     setNewMapList(childBinders);
     //     setDefaults();
-    //   } catch (error) {
-    //     console.log(error);
+    //   } catch (err) {
+    //     console.error(err);
     //   }
     // });
 
