@@ -12,7 +12,7 @@ import { useStackStateContext } from "../../../context/StackStateContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import BackButton from "../backButton/BackButton";
-import { useStackMapContext } from "~/context/StackMapContext";
+import { useStackMapContext } from "../../../context/StackMapContext";
 
 export default function ShelfScene() {
   const [shelfList, setShelfList] = createSignal<any[]>([]);
@@ -21,10 +21,23 @@ export default function ShelfScene() {
   const [binderState, { setHoveredBinder, setSelectedBinder }]: any =
     useBinderStateContext();
   const [stackDragging, { dragToStill }]: any = useStackDraggingContext();
-  const [stackMap, { makeStackMap }]: any = useStackMapContext;
+  const [stackMap, { makeStackMap }]: any = useStackMapContext();
 
   onMount(() => {
-    console.log(stackMap());
+    createEffect(async () => {
+      try {
+        const bindersData = await fetch(
+          `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/tables/binders`
+        );
+        const bindersMap = await bindersData.json();
+
+        makeStackMap(bindersMap);
+        console.log(stackMap());
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
     setShelfList((prevList) => [
       ...prevList,
       <Shelf binderList="initialStack1" />,
