@@ -1,0 +1,135 @@
+.binderContainer {
+  min-width: var(--BinderSize);
+  max-width: var(--BinderSize);
+  height: calc(var(--BinderSize) * 1.4);
+  display: grid;
+  user-select: none;
+  transition: opacity 0.75s;
+}
+
+.binderContainer > * {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: center;
+  justify-self: center;
+}
+
+.binder {
+  all: unset;
+  align-self: center;
+  justify-self: center;
+  width: 90%;
+  height: 90%;
+  font-size: var(--BinderTitleSize);
+  transform-origin: center;
+  transition: height 0.25s, width 0.25s, transform 0.25s;
+  position: relative;
+  pointer-events: none;
+}
+
+.binderBox {
+  width: 100%;
+  height: 100%;
+  clip-path: inset(0% round 8% 8% 8% 8%);
+  display: grid;
+}
+.binderBox > * {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
+}
+
+.binderImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  transform-origin: center center;
+  filter: blur(0.5px) grayscale(50%);
+  transition: filter 0.2s;
+  background-color: darkslategray;
+  background-image: url("https://cards.scryfall.io/art_crop/front/8/c/8c2996d9-3287-4480-8c04-7a378e37e3cf.jpg?1571667973");
+}
+
+.overlay {
+  height: 110%;
+  width: 110%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.5) 70%,
+    rgba(0, 0, 0, 0.95) 90%
+  );
+}
+
+.binderTitle {
+  width: 100%;
+  padding-inline: calc(var(--BinderSize) * 0.08);
+  align-self: end;
+  margin-bottom: 7%;
+  font-size: calc(var(--BinderSize) * 0.1);
+  font-family: var(--SubHeadingFont);
+  text-overflow: ellipsis;
+  text-align: center;
+  color: lightgrey;
+}
+
+.link {
+  width: 100%;
+  height: 100%;
+}
+
+/*Hover Transforms*/
+
+.binderActive {
+  width: 88%;
+  height: 88%;
+  transform: translateY(calc((var(--BinderSize) * 0.03)));
+  z-index: 10;
+}
+
+.binderImageActive {
+  filter: blur(0px) grayscale(0%) saturate(120%);
+}
+
+/* POP UP STYLING */
+
+.popUpContainer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform: translateY(-98%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+.popUpCard {
+  width: 65%;
+  height: 65%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  transition: transform 0.15s;
+  image-rendering: crisp-edges;
+}
+
+.popUpContainer > * {
+  clip-path: inset(0% round 4% 4% 4% 4%);
+  transform-origin: center;
+  background-size: cover;
+  background-position: center;
+  image-rendering: crisp-edges;
+}
+
+.popUpContainer > :nth-child(1) {
+  background-color: white;
+}
+.popUpContainer > :nth-child(2) {
+  background-color: lightgrey;
+}
+.popUpContainer > :nth-child(3) {
+  background-color: darkgray;
+}

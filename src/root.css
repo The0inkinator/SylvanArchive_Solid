@@ -1,0 +1,83 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+/*CUSTOM FONTS*/
+
+@font-face {
+  font-family: "Mukta";
+  src: url("public/fonts/Mukta-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Modern Sans";
+  src: url("../fonts/ModernSans-Light.otf");
+}
+/*SITEWIDE VALUES*/
+:root {
+  /* Test */
+  --TestVar: 12rem;
+  /*Colors*/
+  --ShadowGreen: hsl(146 59.8% 10%);
+  --DefaultGreen: hsl(120, 63%, 37%);
+  --FocusGreen: hsl(133, 55%, 27%);
+  --BackgroundColor: black;
+
+  /*Sizes*/
+  --MagicCardSize: 12rem;
+  --BinderSize: 12rem;
+  --HeaderHeight: calc(100vh / 7);
+  --FooterHeight: 7rem;
+  --MenuHeight: 3rem;
+  --SearchBarWidth: 30vw;
+  --BookmarkBarWidth: 30vw;
+  /* Margins */
+  --NavGridMargin: 70vw;
+  --ContContainUpperMargin: calc(var(--MenuHeight) * 2.5)
+    /* ^^^ this var must remain in the format: ((number) (multiplied by) (number)) */;
+  /* Fonts & Font Variables */
+  --BinderTitleSize: 1.5rem;
+  --HeadingFont: Satisfy, Roboto;
+  --SubHeadingFont: Josefin Sans, Arial, sans-serif;
+  --BodyFont: Modern Sans, Arial, sans-serif;
+  /*Gaps*/
+  --LargeGap: 4rem;
+  --SmallGap: 2rem;
+
+  /*Global Styling*/
+  background-color: var(--BackgroundColor);
+}
+
+/*BREAKPOINT - Desktops - Plus*/
+@media screen and (min-width: 1025px) {
+}
+
+/*BREAKPOINT - Laptops & Tablets*/
+@media screen and (max-width: 1024px) and (min-width: 481px) {
+  :root {
+    /* Margins */
+    --NavGridMargin: 80vw;
+    /* Sizes */
+    --BinderSize: 11rem;
+  }
+}
+
+/*BREAKPOINT - Mobile - Minus*/
+@media screen and (max-width: 480px) {
+  :root {
+    /* Margins */
+    --NavGridMargin: 95vw;
+
+    /* Sizes */
+    --BinderSize: 9rem;
+    --SearchBarWidth: calc(100vw - (var(--MenuHeight) * 4));
+    --BookmarkBarWidth: calc(100vw - (var(--MenuHeight) * 4));
+
+    /* Font Variables */
+    --BinderTitleSize: 1.2rem;
+  }
+}

@@ -1,0 +1,26 @@
+.backButton {
+  all: unset;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  transform: translateX(var(--MenuHeight))
+    translateY(calc(var(--MenuHeight) * -1));
+  height: var(--MenuHeight);
+  width: var(--MenuHeight);
+  overflow: hidden;
+  border-radius: calc(var(--MenuHeight) / 5);
+  background-color: white;
+  background-image: url("/logos/backIcon.svg");
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 2px var(--DefaultGreen);
+  cursor: pointer;
+  transition: opacity 0.25s;
+  z-index: 10;
+}
+
+.backButton:focus-within,
+.backButton:hover {
+  box-shadow: 0 0 0 3px var(--FocusGreen);
+}

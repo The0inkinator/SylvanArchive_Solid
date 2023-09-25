@@ -1,0 +1,165 @@
+.floatingMenuContainer {
+  pointer-events: auto;
+  margin: auto;
+  display: flex;
+  gap: calc(var(--MenuHeight) * 0.25);
+  cursor: pointer;
+}
+
+.menuItemContainer {
+  display: flex;
+}
+
+.button {
+  all: unset;
+  height: var(--MenuHeight);
+  width: var(--MenuHeight);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: var(--MenuHeight) 0 0 0 0 0;
+  align-items: center;
+  border-radius: calc(var(--MenuHeight) / 5);
+  background-color: white;
+  box-shadow: 0 0 0 2px var(--DefaultGreen);
+  cursor: pointer;
+  transition: width 0.25s, box-shadow 0.15s;
+}
+
+.button:focus-within,
+.button:hover {
+  box-shadow: 0 0 0 3px var(--FocusGreen);
+}
+
+/* HOME BUTTON STYLING */
+
+#FMHomeIcon {
+  height: 80%;
+  aspect-ratio: 1/1;
+  background-image: url('../../logos/sylvanArchiveLogo.svg');
+  margin: auto;
+  grid-column: 1;
+}
+
+.fmHomeTitle {
+  font-family: var(--HeadingFont);
+  font-size: calc(var(--MenuHeight) / 2);
+  white-space: nowrap;
+  padding-left: 2px;
+  grid-column: 2;
+  transition: width 0.25s;
+}
+
+/* SEARCHBAR STYLING */
+
+#FMSearchIcon {
+  height: 70%;
+  aspect-ratio: 1/1;
+  margin: auto;
+  background-image: url('../../logos/searchIcon.svg');
+  grid-column: 1;
+}
+
+#searchInput {
+  all: unset;
+  overflow: hidden;
+  place-items: center;
+  transition: width 0.25s;
+  font-size: calc(var(--MenuHeight) * 0.32);
+  font-family: var(--SubHeadingFont);
+  color: grey;
+}
+
+#searchCloseButton {
+  all: unset;
+  display: none;
+  height: 70%;
+  aspect-ratio: 1/1;
+  place-items: center;
+  grid-column: 3;
+  border-radius: calc(var(--MenuHeight) / 5);
+}
+
+#searchCloseButton > * {
+  width: 80%;
+  height: 13%;
+  background-color: lightgrey;
+  grid-row: 1;
+  grid-column: 1;
+  align-items: center;
+}
+
+#searchCloseButton > :nth-child(1) {
+  transform: rotate(45deg);
+}
+#searchCloseButton > :nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+#searchCloseButton:focus,
+#searchCloseButton:hover {
+  background-color: var(--FocusGreen);
+}
+
+#searchCloseButton:hover > * {
+  background-color: var(--BackgroundColor);
+}
+#searchCloseButton:focus > * {
+  background-color: var(--BackgroundColor);
+}
+
+/* BOOKMARK STYLING */
+
+#FMBookmarkIcon {
+  height: 75%;
+  aspect-ratio: 1/1;
+  background-image: url('../../logos/bookmarksIcon.svg');
+  margin: auto;
+  grid-column: 1;
+}
+
+#bookmarkCloseButton {
+  all: unset;
+  display: none;
+  height: 70%;
+  aspect-ratio: 1/1;
+  place-items: center;
+  grid-column: 3;
+  border-radius: calc(var(--MenuHeight) / 5);
+}
+
+#bookmarkCloseButton > * {
+  width: 80%;
+  height: 13%;
+  background-color: lightgrey;
+  grid-row: 1;
+  grid-column: 1;
+  align-items: center;
+}
+
+#bookmarkCloseButton > :nth-child(1) {
+  transform: rotate(45deg);
+}
+#bookmarkCloseButton > :nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+#bookmarkCloseButton:focus,
+#bookmarkCloseButton:hover {
+  background-color: var(--FocusGreen);
+}
+
+#bookmarkCloseButton:hover > * {
+  background-color: var(--BackgroundColor);
+}
+#bookmarkCloseButton:focus > * {
+  background-color: var(--BackgroundColor);
+}
+
+/* ACCOUNT BUTTON STYLING */
+
+#FMAccountIcon {
+  height: 75%;
+  aspect-ratio: 1/1;
+  background-image: url('../../logos/accountIcon.svg');
+  margin: auto;
+}

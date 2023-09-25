@@ -1,0 +1,11 @@
+.loadingStacksText {
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 2rem;
+}
+
+.bottomMargin {
+  width: 100%;
+  pointer-events: none;
+}

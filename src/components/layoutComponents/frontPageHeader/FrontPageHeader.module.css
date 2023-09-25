@@ -1,0 +1,14 @@
+.headerBar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: var(--ContContainUpperMargin);
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.headerBar > * {
+  pointer-events: auto;
+}
