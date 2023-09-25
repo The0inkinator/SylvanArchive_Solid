@@ -16,6 +16,7 @@ import "./root.css";
 import { StackDraggingProvider } from "./context/StackDraggingContext";
 import { BinderStateProvider } from "./context/BinderStateContext";
 import { StackStateProvider } from "./context/StackStateContext";
+import { StackMapProvider } from "./context/stackMapContext";
 
 export default function Root() {
   return (
@@ -51,9 +52,11 @@ export default function Root() {
             <StackDraggingProvider dragState={"still"}>
               <BinderStateProvider binderStateList={0}>
                 <StackStateProvider stackStateList={null}>
-                  <Routes>
-                    <FileRoutes />
-                  </Routes>
+                  <StackMapProvider stackMapState={null}>
+                    <Routes>
+                      <FileRoutes />
+                    </Routes>
+                  </StackMapProvider>
                 </StackStateProvider>
               </BinderStateProvider>
             </StackDraggingProvider>
