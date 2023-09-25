@@ -16,7 +16,7 @@ import "./root.css";
 import { StackDraggingProvider } from "./context/StackDraggingContext";
 import { BinderStateProvider } from "./context/BinderStateContext";
 import { StackStateProvider } from "./context/StackStateContext";
-import { StackMapProvider } from "./context/stackMapContext";
+import { StackMapProvider } from "./context/StackMapContext";
 
 export default function Root() {
   return (
