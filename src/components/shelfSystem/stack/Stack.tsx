@@ -123,6 +123,7 @@ export default function Stack({ stackRef, stackID }: StackInputs) {
           (binder: any) => binder.parent === stackID
         );
         setBinderList(loadedBinderList);
+        setDefaults();
       }
     });
 
@@ -484,7 +485,7 @@ export default function Stack({ stackRef, stackID }: StackInputs) {
                 displayArt={binder.displayArt}
                 bgCards={binder.bgArts}
                 binderNum={index() + 1}
-                binderParent={binder.parent}
+                binderParentElement={thisStack}
                 binderLink={binder.childType}
               />
             );

@@ -31,7 +31,7 @@ interface BinderInputs {
   bgCards?: CardFetcherInputs[];
   title: string;
   binderNum: number;
-  binderParent: any;
+  binderParentElement: any;
   binderLink: string;
 }
 
@@ -41,7 +41,7 @@ export default function Binder({
   bgCards,
   title,
   binderNum,
-  binderParent,
+  binderParentElement,
   binderLink,
 }: BinderInputs) {
   //Empty styling properties for bgCards
@@ -147,24 +147,24 @@ export default function Binder({
     }
 
     //fade in animation
-    const stackContainer = binderParent.children;
-    // const binderCount = stackContainer[0].children.length;
+    const stackContainer = binderParentElement.children;
+    const binderCount = stackContainer[0].children.length;
 
-    // function fadeIn() {
-    //   let centerBinder: number[];
-    //   let binderDistance: number;
-    //   centerBinder = [Math.ceil(binderCount / 2)];
-    //   binderDistance = centerBinder[0] - binderNum;
-    //   if (binderDistance < 0) {
-    //     binderDistance = Math.abs(binderDistance) + 0.5;
-    //   }
-    //   const timeToFadeIn: number = binderDistance * 100;
-    //   setTimeout(() => {
-    //     setBinderVisible(true);
-    //     setBinderAnimating(false);
-    //   }, timeToFadeIn);
-    // }
-    // fadeIn();
+    function fadeIn() {
+      let centerBinder: number[];
+      let binderDistance: number;
+      centerBinder = [Math.ceil(binderCount / 2)];
+      binderDistance = centerBinder[0] - binderNum;
+      if (binderDistance < 0) {
+        binderDistance = Math.abs(binderDistance) + 0.5;
+      }
+      const timeToFadeIn: number = binderDistance * 100;
+      setTimeout(() => {
+        setBinderVisible(true);
+        setBinderAnimating(false);
+      }, timeToFadeIn);
+    }
+    fadeIn();
   });
 
   const handleDoubleClick = (event: MouseEvent) => {
@@ -177,7 +177,7 @@ export default function Binder({
   createEffect(() => {
     if (
       binderState().selectedBinder > 0 &&
-      stackState().activeStack === binderParent
+      stackState().activeStack === binderParentElement
     ) {
       if (binderState().selectedBinder === binderNum) {
         setThisBinderSelected(true);
@@ -190,7 +190,7 @@ export default function Binder({
   createEffect(() => {
     if (!binderAnimating()) {
       if (
-        stackState().activeStack === binderParent &&
+        stackState().activeStack === binderParentElement &&
         binderState().selectedBinder === 0
       ) {
         setBinderVisible(true);
@@ -203,13 +203,13 @@ export default function Binder({
   });
 
   createEffect(() => {
-    if (stackState().activeStack === binderParent) {
+    if (stackState().activeStack === binderParentElement) {
       setThisBinderSelected(false);
     }
   });
 
   createEffect(() => {
-    if (stackState().activeStack === binderParent) {
+    if (stackState().activeStack === binderParentElement) {
       if (
         binderState().hoveredBinder === binderNum &&
         binderState().selectedBinder === 0
@@ -225,7 +225,7 @@ export default function Binder({
 
   createEffect(() => {
     if (
-      stackState().activeStack === binderParent &&
+      stackState().activeStack === binderParentElement &&
       stackDragging() === "dragging" &&
       thisBinderSelected()
     ) {
@@ -260,12 +260,12 @@ export default function Binder({
           setBinderActive(false);
         }}
         onmouseenter={() => {
-          if (stackState().activeStack === binderParent) {
+          if (stackState().activeStack === binderParentElement) {
             setHoveredBinder(binderNum);
           }
         }}
         onmouseleave={() => {
-          if (stackState().activeStack === binderParent) {
+          if (stackState().activeStack === binderParentElement) {
             setHoveredBinder(0);
           }
         }}
