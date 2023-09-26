@@ -10,7 +10,6 @@ export default function buildStackMap() {
         `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/tables/binders`
       );
       const rawBindersMap = await bindersData.json();
-      console.log("building stack map");
       interface rawBinderObject {
         art: string;
         art_face: string | null;
@@ -56,29 +55,59 @@ export default function buildStackMap() {
       }
 
       let binderLookup: Record<string, number> = {};
+      let binderMaps: binderObject[] = [];
 
-      const binderMap: binderObject[] = rawBindersMap.map(
-        (binderObject: rawBinderObject, index: number) => {
-          binderLookup[`${binderObject.name}`] = index;
+      rawBindersMap.map((binderObject: rawBinderObject, index: number) => {
+        let tempBgArts: bgArts[] = [];
 
-          return {
-            name: binderObject.name,
-            displayName: binderObject.display_name,
-            parent: binderObject.parent,
-            childType: binderObject.child_type,
-            displayArt: {
-              art: binderObject.art,
-              artSet: binderObject.art_set,
-              artNum: binderObject.art_num,
-              artFace: binderObject.art_face,
-            },
-            bgArts: {},
-          };
+        if (binderObject.bgart1) {
+          tempBgArts.push({
+            art: binderObject.bgart1,
+            artSet: binderObject.bgart1_set,
+            artNum: binderObject.bgart1_num,
+            artFace: binderObject.bgart1_face,
+          });
         }
-      );
+
+        if (binderObject.bgart2) {
+          tempBgArts.push({
+            art: binderObject.bgart2,
+            artSet: binderObject.bgart2_set,
+            artNum: binderObject.bgart2_num,
+            artFace: binderObject.bgart2_face,
+          });
+        }
+
+        if (binderObject.bgart3) {
+          tempBgArts.push({
+            art: binderObject.bgart3,
+            artSet: binderObject.bgart3_set,
+            artNum: binderObject.bgart3_num,
+            artFace: binderObject.bgart3_face,
+          });
+        }
+
+        binderLookup[`${binderObject.name}`] = index;
+
+        binderMaps[index] = {
+          name: binderObject.name,
+          displayName: binderObject.display_name,
+          parent: binderObject.parent,
+          childType: binderObject.child_type,
+          displayArt: {
+            art: binderObject.art,
+            artSet: binderObject.art_set,
+            artNum: binderObject.art_num,
+            artFace: binderObject.art_face,
+          },
+          bgArts: tempBgArts,
+        };
+      });
+
+      const stackMap: any[] = [binderLookup, binderMaps];
 
       makeStackMap(rawBindersMap);
-      console.log(binderLookup);
+      console.log(stackMap);
     } catch (err) {
       console.error(err);
     }
