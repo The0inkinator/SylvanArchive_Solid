@@ -1,5 +1,5 @@
 export async function GET() {
-  return [
+  const data = [
     {
       art: "Mystifying Maze",
       art_face: null,
@@ -45,4 +45,6 @@ export async function GET() {
       parent: "none",
     },
   ];
+  //   return new Response.json([{item: 1}, {item: 2}])
+  return "hello world";
 }
