@@ -30,9 +30,10 @@ interface BinderInputs {
   displayArt: CardFetcherInputs;
   bgCards?: CardFetcherInputs[];
   title: string;
+  binderName: string;
   binderNum: number;
   binderParentElement: any;
-  binderLink: string;
+  binderChildType: string;
 }
 
 //Main function
@@ -40,9 +41,10 @@ export default function Binder({
   displayArt,
   bgCards,
   title,
+  binderName,
   binderNum,
   binderParentElement,
-  binderLink,
+  binderChildType,
 }: BinderInputs) {
   //Empty styling properties for bgCards
   let bgCardArray: any[] = [];
@@ -244,7 +246,15 @@ export default function Binder({
 
   const queueStackFromBinder = () => {
     if (stackState().queuedStack === "none") {
-      queueStack(`${binderLink}`);
+      if (binderChildType === "newStack") {
+        queueStack(`${binderName}`);
+      } else if (binderChildType === "cardList") {
+        console.log("Route to card list");
+      } else {
+        queueStack("nothingHereYet_none");
+      }
+    } else {
+      console.error("Stack already queded");
     }
   };
 

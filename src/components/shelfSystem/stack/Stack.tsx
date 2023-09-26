@@ -447,46 +447,15 @@ export default function Stack({ stackRef, stackID }: StackInputs) {
           fallback={<div class={styles.loadingListText}></div>}
         >
           {(binder: any, index: any) => {
-            // const tempBgCards: any[] = [
-            //   { cardName: item.bg_art_1 },
-            //   { cardName: item.bg_art_2 },
-            //   { cardName: item.bg_art_3 },
-            // ];
-
-            // const bgCards = tempBgCards.filter(
-            //   (entry) => entry.cardName !== null
-            // );
-
-            // const newBgCardList = bgCards?.map((bgCard: any) => {
-            //   return {
-            //     cardName: bgCard.cardName,
-            //     cardSet: bgCard.cardSet,
-            //     cardCollectNum: bgCard.cardCollectNum,
-            //     cardFace: bgCard.cardFace,
-            //   };
-            // });
-            // interface artInput {
-            //   cardName: any;
-            //   cardSet: any;
-            //   cardCollectNum: any;
-            //   cardFace: any;
-            // }
-
-            // const displayArt: artInput = {
-            //   cardName: item.binder_art,
-            //   cardSet: null,
-            //   cardCollectNum: null,
-            //   cardFace: null,
-            // };
-
             return (
               <Binder
                 title={binder.displayName}
+                binderName={binder.name}
                 displayArt={binder.displayArt}
                 bgCards={binder.bgArts}
                 binderNum={index() + 1}
                 binderParentElement={thisStack}
-                binderLink={binder.childType}
+                binderChildType={binder.childType}
               />
             );
           }}
