@@ -24,48 +24,6 @@ export default function ShelfScene() {
   const [stackMap, { makeStackMap }]: any = useStackMapContext();
 
   onMount(() => {
-    createEffect(async () => {
-      try {
-        const bindersData = await fetch(
-          `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/tables/binders`
-        );
-        const bindersMap = await bindersData.json();
-
-        const loadedStackMap = bindersMap.map(
-          (binderObject: any, index: number) => {
-            console.log(binderObject);
-
-            const tempBgArtList = [
-              binderObject.bgart1,
-              binderObject.bgart2,
-              binderObject.bgart3,
-            ];
-
-            console.log(tempBgArtList);
-
-            return {
-              name: binderObject.name,
-              displayName: binderObject.display_name,
-              parent: binderObject.parent,
-              childType: binderObject.child_type,
-              displayArt: {
-                art: binderObject.art,
-                artSet: binderObject.art_set,
-                artNum: binderObject.art_num,
-                artFace: binderObject.art_face,
-              },
-              bgArts: {},
-            };
-          }
-        );
-
-        makeStackMap(bindersMap);
-        console.log(loadedStackMap);
-      } catch (err) {
-        console.error(err);
-      }
-    });
-
     setShelfList((prevList) => [
       ...prevList,
       <Shelf binderList="initialStack1" />,
