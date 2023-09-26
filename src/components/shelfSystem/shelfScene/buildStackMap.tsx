@@ -106,8 +106,7 @@ export default function buildStackMap() {
 
       const stackMap: any[] = [binderLookup, binderMaps];
 
-      makeStackMap(rawBindersMap);
-      console.log(stackMap);
+      makeStackMap(stackMap);
     } catch (err) {
       console.error(err);
     }
