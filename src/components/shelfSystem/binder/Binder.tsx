@@ -250,8 +250,6 @@ export default function Binder({
         queueStack(`${binderName}`);
       } else if (binderChildType === "cardList") {
         console.log("Route to card list");
-      } else {
-        queueStack("nothingHereYet_none");
       }
     } else {
       console.error("Stack already queded");

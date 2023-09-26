@@ -96,34 +96,23 @@ export default function Stack({ stackRef, stackID }: StackInputs) {
       setStackCollision({ left: collisionLeft, right: collisionRight });
     }
 
-    // createEffect(async () => {
-    //   try {
-    //     const stackData = await fetch(
-    //       `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/stack_map/*/address/'${stackFrom}'`
-    //     );
-    //     const stackInfoJson = await stackData.json();
-    //     const stackInfo = await stackInfoJson[0];
-
-    //     const childBindersData = await fetch(
-    //       `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/query/binder_map/*/parent_stack/'${stackInfo.address}'`
-    //     );
-
-    //     const childBinders = await childBindersData.json();
-
-    //     setNewMapList(childBinders);
-    //     setDefaults();
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // });
-
     createEffect(() => {
       if (stackState().stackMapLoaded) {
-        const loadedBinderList = stackMap()[1].filter(
+        let loadedBinderList = stackMap()[1].filter(
           (binder: any) => binder.parent === stackID
         );
-        setBinderList(loadedBinderList);
-        setDefaults();
+        if (loadedBinderList.length > 0) {
+          setBinderList(loadedBinderList);
+          setDefaults();
+        } else {
+          stackID = "nothingHereYet_none";
+          console.log(stackID);
+          let loadedBinderList = stackMap()[1].filter(
+            (binder: any) => binder.name === stackID
+          );
+          setBinderList(loadedBinderList);
+          setDefaults();
+        }
       }
     });
 
