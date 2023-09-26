@@ -13,6 +13,7 @@ import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import BackButton from "../backButton/BackButton";
 import { useStackMapContext } from "../../../context/StackMapContext";
+import buildStackMap from "./buildStackMap";
 
 export default function ShelfScene() {
   const [shelfList, setShelfList] = createSignal<any[]>([]);
@@ -24,6 +25,8 @@ export default function ShelfScene() {
   const [stackMap, { makeStackMap }]: any = useStackMapContext();
 
   onMount(() => {
+    buildStackMap();
+
     setShelfList((prevList) => [
       ...prevList,
       <Shelf binderList="initialStack1" />,

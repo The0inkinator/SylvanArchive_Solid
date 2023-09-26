@@ -10,7 +10,7 @@ export default function buildStackMap() {
         `https://sylvan-archive-api-03b13d1a78b5.herokuapp.com/tables/binders`
       );
       const rawBindersMap = await bindersData.json();
-
+      console.log("building stack map");
       interface rawBinderObject {
         art: string;
         art_face: string | null;
