@@ -29,7 +29,7 @@ export default function ShelfScene() {
 
     setShelfList((prevList) => [
       ...prevList,
-      <Shelf binderList="initialStack1" />,
+      <Shelf binderList="starting_none" stackID="starting_none" />,
     ]);
     updateStacks();
   });
@@ -40,7 +40,7 @@ export default function ShelfScene() {
         ...prevList,
         () => {
           // binderList={`${path}`}
-          return <Shelf binderList={`initialStack1`} />;
+          return <Shelf binderList={`starting_none`} stackID="starting_none" />;
         },
       ]);
       queueStack("none");

@@ -8,11 +8,10 @@ import { useStackMapContext } from "../../../context/StackMapContext";
 
 interface StackInputs {
   stackRef: string;
-  stackFrom?: string;
-  stackTo?: string;
+  stackID: string;
 }
 
-export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
+export default function Stack({ stackRef, stackID }: StackInputs) {
   //Property to track the pixel width of cards that the stack is made of
   const [binderSize, setBinderSize] = createSignal<number>(0);
   //Property to track the pixel width of the whole stack
@@ -52,7 +51,7 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
   const [distanceToSlide, setDistanceToSlide] = createSignal<number>(0);
   const [canSlide, setCanSlide] = createSignal<boolean>(false);
   const [thisStackActive, setThisStackActive] = createSignal<boolean>(true);
-  const [newMapList, setNewMapList] = createSignal<any[]>([]);
+  const [binderList, setBinderList] = createSignal<any[]>([]);
   const [selectedBinderCtr, setSelectedBinderCtr] = createSignal<number>(0);
   const [previouslyMounted, setPreviouslyMounted] =
     createSignal<boolean>(false);
@@ -76,7 +75,7 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
         );
       }
 
-      setStackWidth(newMapList().length * binderSize());
+      setStackWidth(binderList().length * binderSize());
       const stackStartingPos = () => {
         if (windowWidth - stackWidth() >= 0) {
           return windowWidth / 2 - stackWidth() / 2;
@@ -117,6 +116,15 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
     //     console.error(err);
     //   }
     // });
+
+    createEffect(() => {
+      if (stackState().stackMapLoaded) {
+        const loadedBinderList = stackMap()[1].filter(
+          (binder: any) => binder.parent === stackID
+        );
+        setBinderList(loadedBinderList);
+      }
+    });
 
     //handles window resize to update all relevant properties
     createEffect(() => {
@@ -434,50 +442,50 @@ export default function Stack({ stackRef, stackFrom, stackTo }: StackInputs) {
     >
       <div class={styles.stackContainer}>
         <For
-          each={newMapList()}
+          each={binderList()}
           fallback={<div class={styles.loadingListText}></div>}
         >
-          {(item: any, index: any) => {
-            const tempBgCards: any[] = [
-              { cardName: item.bg_art_1 },
-              { cardName: item.bg_art_2 },
-              { cardName: item.bg_art_3 },
-            ];
+          {(binder: any, index: any) => {
+            // const tempBgCards: any[] = [
+            //   { cardName: item.bg_art_1 },
+            //   { cardName: item.bg_art_2 },
+            //   { cardName: item.bg_art_3 },
+            // ];
 
-            const bgCards = tempBgCards.filter(
-              (entry) => entry.cardName !== null
-            );
+            // const bgCards = tempBgCards.filter(
+            //   (entry) => entry.cardName !== null
+            // );
 
-            const newBgCardList = bgCards?.map((bgCard: any) => {
-              return {
-                cardName: bgCard.cardName,
-                cardSet: bgCard.cardSet,
-                cardCollectNum: bgCard.cardCollectNum,
-                cardFace: bgCard.cardFace,
-              };
-            });
-            interface artInput {
-              cardName: any;
-              cardSet: any;
-              cardCollectNum: any;
-              cardFace: any;
-            }
+            // const newBgCardList = bgCards?.map((bgCard: any) => {
+            //   return {
+            //     cardName: bgCard.cardName,
+            //     cardSet: bgCard.cardSet,
+            //     cardCollectNum: bgCard.cardCollectNum,
+            //     cardFace: bgCard.cardFace,
+            //   };
+            // });
+            // interface artInput {
+            //   cardName: any;
+            //   cardSet: any;
+            //   cardCollectNum: any;
+            //   cardFace: any;
+            // }
 
-            const displayArt: artInput = {
-              cardName: item.binder_art,
-              cardSet: null,
-              cardCollectNum: null,
-              cardFace: null,
-            };
+            // const displayArt: artInput = {
+            //   cardName: item.binder_art,
+            //   cardSet: null,
+            //   cardCollectNum: null,
+            //   cardFace: null,
+            // };
 
             return (
               <Binder
-                title={item.display_name}
-                displayArt={displayArt}
-                bgCards={newBgCardList}
+                title={binder.displayName}
+                displayArt={binder.displayArt}
+                bgCards={binder.bgArts}
                 binderNum={index() + 1}
-                binderParent={thisStack}
-                binderLink={item.child}
+                binderParent={binder.parent}
+                binderLink={binder.childType}
               />
             );
           }}

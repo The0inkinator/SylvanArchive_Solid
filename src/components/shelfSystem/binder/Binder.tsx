@@ -21,10 +21,10 @@ import { useStackStateContext } from "../../../context/StackStateContext";
 
 //TYPING
 interface CardFetcherInputs {
-  cardName: string;
-  cardSet?: string;
-  cardCollectNum?: number;
-  cardFace?: "front" | "back";
+  art: string;
+  artSet?: string;
+  artNum?: number;
+  artFace?: "front" | "back";
 }
 interface BinderInputs {
   displayArt: CardFetcherInputs;
@@ -77,10 +77,10 @@ export default function Binder({
 
   //Inputs primary display art
   createEffect(async () => {
-    const url = await CardArtFetcher(displayArt.cardName, {
-      cardSet: displayArt?.cardSet,
-      cardCollectNum: displayArt?.cardCollectNum,
-      cardFace: displayArt?.cardFace,
+    const url = await CardArtFetcher(displayArt.art, {
+      cardSet: displayArt?.artSet,
+      cardCollectNum: displayArt?.artNum,
+      cardFace: displayArt?.artFace,
     });
     setDisplayArtUrl(url);
   });
@@ -97,10 +97,10 @@ export default function Binder({
           if (typeof card === "string") {
             cardInfo = card;
           } else {
-            cardInfo = card.cardName;
-            mapCardSet = card.cardSet;
-            mapCardCollectNum = card.cardCollectNum;
-            mapCardFace = card.cardFace;
+            cardInfo = card.art;
+            mapCardSet = card.artSet;
+            mapCardCollectNum = card.artNum;
+            mapCardFace = card.artFace;
           }
 
           return await SmallCardFetcher(cardInfo, {
@@ -148,23 +148,23 @@ export default function Binder({
 
     //fade in animation
     const stackContainer = binderParent.children;
-    const binderCount = stackContainer[0].children.length;
+    // const binderCount = stackContainer[0].children.length;
 
-    function fadeIn() {
-      let centerBinder: number[];
-      let binderDistance: number;
-      centerBinder = [Math.ceil(binderCount / 2)];
-      binderDistance = centerBinder[0] - binderNum;
-      if (binderDistance < 0) {
-        binderDistance = Math.abs(binderDistance) + 0.5;
-      }
-      const timeToFadeIn: number = binderDistance * 100;
-      setTimeout(() => {
-        setBinderVisible(true);
-        setBinderAnimating(false);
-      }, timeToFadeIn);
-    }
-    fadeIn();
+    // function fadeIn() {
+    //   let centerBinder: number[];
+    //   let binderDistance: number;
+    //   centerBinder = [Math.ceil(binderCount / 2)];
+    //   binderDistance = centerBinder[0] - binderNum;
+    //   if (binderDistance < 0) {
+    //     binderDistance = Math.abs(binderDistance) + 0.5;
+    //   }
+    //   const timeToFadeIn: number = binderDistance * 100;
+    //   setTimeout(() => {
+    //     setBinderVisible(true);
+    //     setBinderAnimating(false);
+    //   }, timeToFadeIn);
+    // }
+    // fadeIn();
   });
 
   const handleDoubleClick = (event: MouseEvent) => {
