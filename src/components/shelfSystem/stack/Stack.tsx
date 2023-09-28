@@ -7,11 +7,10 @@ import { useStackStateContext } from "../../../context/StackStateContext";
 import { useStackMapContext } from "../../../context/StackMapContext";
 
 interface StackInputs {
-  stackRef: string;
   stackID: string;
 }
 
-export default function Stack({ stackRef, stackID }: StackInputs) {
+export default function Stack({ stackID }: StackInputs) {
   //Property to track the pixel width of cards that the stack is made of
   const [binderSize, setBinderSize] = createSignal<number>(0);
   //Property to track the pixel width of the whole stack

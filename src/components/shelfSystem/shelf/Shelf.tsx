@@ -4,13 +4,12 @@ import { useStackStateContext } from "../../../context/StackStateContext";
 import { createSignal, onMount } from "solid-js";
 
 interface ShelfInputs {
-  binderList: string;
   stackID: string;
 }
 
 let shelfContainer: any;
 
-export default function Shelf({ binderList, stackID }: ShelfInputs) {
+export default function Shelf({ stackID }: ShelfInputs) {
   const [upperMargin, setUpperMargin] = createSignal<number>(0);
   const [stackState, { setShelfHeight }]: any = useStackStateContext();
 
@@ -47,7 +46,7 @@ export default function Shelf({ binderList, stackID }: ShelfInputs) {
       }}
     >
       <div class="stackSlider">
-        <Stack stackRef={`${binderList}`} stackID={`${stackID}`} />
+        <Stack stackID={`${stackID}`} />
       </div>
     </div>
   );
