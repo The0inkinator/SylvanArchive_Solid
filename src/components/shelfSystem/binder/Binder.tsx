@@ -9,7 +9,7 @@
 // base on how many are passed to it, these also use the art fetcher and require a
 // minimum of a card name for each
 
-import "./binderStyles.css";
+import styles from "./Binder.module.css";
 import { createSignal, createEffect, onMount, onCleanup } from "solid-js";
 import {
   CardArtFetcher,
@@ -259,7 +259,7 @@ export default function Binder({
   return (
     <>
       <div
-        class="binderContainer"
+        class={styles.binderContainer}
         ref={(el) => (binderContainer = el)}
         onfocusin={() => {
           setBinderActive(true);
@@ -284,34 +284,32 @@ export default function Binder({
         <div
           tabindex="0"
           ref={(el) => (thisBinder = el)}
-          classList={{
-            binder: true,
-            binderActive: binderActive(),
-          }}
+          class={`${styles.binder} ${
+            binderActive() ? styles.binderActive : ""
+          }`}
         >
-          <div class="binderBox">
+          <div class={styles.binderBox}>
             <div
-              classList={{
-                binderImage: true,
-                binderImageActive: binderActive(),
-              }}
+              class={`${styles.binderImage} ${
+                binderActive() ? styles.binderImageActive : ""
+              }`}
               style={{
                 "background-image": displayArtUrl()
                   ? `url(${displayArtUrl()})`
                   : "none",
               }}
             ></div>
-            <div class="overlay"></div>
-            <div class="binderTitle">{title}</div>
-            <a class="link"></a>
+            <div class={styles.overlay}></div>
+            <div class={styles.binderTitle}>{title}</div>
+            <a class={styles.link}></a>
           </div>
 
-          <div class="popUpContainer">
+          <div class={styles.popUpContainer}>
             {bgCardsLoaded() &&
               bgCardUrls().map((card: any, index: number) => {
                 return (
                   <div
-                    class="popUpCard"
+                    class={styles.popUpCard}
                     style={{
                       "background-image": card ? `url(${card})` : "none",
                       transform: binderActive()
