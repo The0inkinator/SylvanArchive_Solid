@@ -240,11 +240,11 @@ export default function Binder({
       stackDragging() === "locked" &&
       binderState().selectedBinder === binderNum
     ) {
-      queueStackFromBinder();
+      loadStackFromBinder();
     }
   });
 
-  const queueStackFromBinder = () => {
+  const loadStackFromBinder = () => {
     if (stackState().loadingStack === "none") {
       if (binderChildType === "newStack") {
         loadStack(`${binderName}`);
