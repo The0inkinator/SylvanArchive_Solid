@@ -15,7 +15,7 @@ export function StackStateProvider(props: any) {
   const [stackState, setStackState] = createSignal<stackInfo>({
       activeStack: null,
       loadingStack: "none",
-      stackCount: 0,
+      stackCount: 1,
       stacksToClose: 0,
       shelfHeight: 0,
       stackMapLoaded: false,

@@ -1,5 +1,4 @@
 import styles from "./shelfSceneStyles.module.css";
-import Shelf from "../shelf/Shelf";
 import Stack from "../stack/Stack";
 import {
   createSignal,
@@ -15,7 +14,6 @@ import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import BackButton from "../backButton/BackButton";
 import { useStackMapContext } from "../../../context/StackMapContext";
 import buildStackMap from "./buildStackMap";
-import { style } from "solid-js/web";
 
 export default function ShelfScene() {
   const [stackList, setStackList] = createSignal<any[]>([]);
@@ -63,10 +61,13 @@ export default function ShelfScene() {
       if (stackState().stacksToClose > 0) {
         closeStacks(stackState().stacksToClose);
         setTimeout(loop, 100);
-      } else if (stackState().loadingStack !== "none") {
-        newShelf(stackState().loadingStack);
-        setTimeout(loop, 100);
-      } else {
+      }
+
+      // else if (stackState().loadingStack !== "none") {
+      //   newShelf(stackState().loadingStack);
+      //   setTimeout(loop, 100);
+      // }
+      else {
         setTimeout(loop, 100);
       }
     }
