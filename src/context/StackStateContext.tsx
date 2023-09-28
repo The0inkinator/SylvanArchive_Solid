@@ -34,7 +34,14 @@ export function StackStateProvider(props: any) {
           });
         },
         loadStack(inputPath: string | "none") {
-          stackState().loadingStack = inputPath;
+          setStackState({
+            activeStack: stackState().activeStack,
+            loadingStack: inputPath,
+            stackCount: stackState().stackCount,
+            stacksToClose: stackState().stacksToClose,
+            shelfHeight: stackState().shelfHeight,
+            stackMapLoaded: stackState().stackMapLoaded,
+          });
         },
         addToStackCount(inputNumber: number) {
           const newStackCount = stackState().stackCount + inputNumber;

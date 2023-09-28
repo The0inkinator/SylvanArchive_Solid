@@ -64,7 +64,7 @@ export default function Binder({
     useBinderStateContext();
   const [stackState, { changeActiveStack, loadStack }]: any =
     useStackStateContext();
-  const [stackDragging]: any = useStackDraggingContext();
+  const [stackDragging, { dragToStill }]: any = useStackDraggingContext();
   const [thisBinderSelected, setThisBinderSelected] = createSignal<
     true | false | "waiting"
   >(false);
@@ -240,6 +240,7 @@ export default function Binder({
       stackDragging() === "locked" &&
       binderState().selectedBinder === binderNum
     ) {
+      dragToStill();
       loadStackFromBinder();
     }
   });

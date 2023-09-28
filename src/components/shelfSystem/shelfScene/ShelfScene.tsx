@@ -73,7 +73,7 @@ export default function ShelfScene() {
   };
 
   return (
-    <div class={styles.shelfSceneContainer}>
+    <div class={styles.shelfSceneContainer} onclick={() => {}}>
       <For
         each={stackList()}
         fallback={<div class={styles.loadingStacksText}></div>}
