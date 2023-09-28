@@ -5,6 +5,7 @@ import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
 import { useStackMapContext } from "../../../context/StackMapContext";
+import BackBinder from "../backBinder/BackBinder";
 
 interface StackInputs {
   stackID: string;
@@ -57,6 +58,7 @@ export default function Stack({ stackID }: StackInputs) {
 
   //typing for refs
   let thisStack: HTMLDivElement | null = null;
+  let binderContainer: HTMLDivElement | null = null;
 
   //Function that: Sets the stack pixel width, Positions the stack in the screen center, sets the collision boundries for the stack
   //Called both on mount and on screen resize
@@ -403,7 +405,6 @@ export default function Stack({ stackID }: StackInputs) {
   return (
     <div
       class={styles.stackHandle}
-      // && `${stackRef}`
       ref={(el) => (thisStack = el)}
       onmouseenter={() => {
         stackHovered = true;
@@ -411,7 +412,9 @@ export default function Stack({ stackID }: StackInputs) {
           document.body.style.cursor = "grab";
         }
       }}
-      onclick={() => {}}
+      onclick={() => {
+        console.log(binderContainer?.children);
+      }}
       onmouseleave={() => {
         stackHovered = false;
         if (stackDragging() === "still") {
@@ -426,7 +429,7 @@ export default function Stack({ stackID }: StackInputs) {
         // opacity: thisStackActive() ? "100%" : "50%",
       }}
     >
-      <div class={styles.stackContainer}>
+      <div class={styles.stackContainer} ref={(el) => (binderContainer = el)}>
         <For
           each={binderList()}
           fallback={<div class={styles.loadingListText}></div>}
