@@ -62,7 +62,7 @@ export default function Binder({
   //Shelf contexts
   const [binderState, { setSelectedBinder, setHoveredBinder }]: any =
     useBinderStateContext();
-  const [stackState, { changeActiveStack, queueStack }]: any =
+  const [stackState, { changeActiveStack, loadStack }]: any =
     useStackStateContext();
   const [stackDragging]: any = useStackDraggingContext();
   const [thisBinderSelected, setThisBinderSelected] = createSignal<
@@ -245,14 +245,14 @@ export default function Binder({
   });
 
   const queueStackFromBinder = () => {
-    if (stackState().queuedStack === "none") {
+    if (stackState().loadingStack === "none") {
       if (binderChildType === "newStack") {
-        queueStack(`${binderName}`);
+        loadStack(`${binderName}`);
       } else if (binderChildType === "cardList") {
         console.log("Route to card list");
       }
     } else {
-      queueStack(`nothingHereYet_none`);
+      loadStack(`nothingHereYet_none`);
     }
   };
 

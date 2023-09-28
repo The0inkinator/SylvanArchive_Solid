@@ -19,7 +19,7 @@ import { style } from "solid-js/web";
 
 export default function ShelfScene() {
   const [stackList, setStackList] = createSignal<any[]>([]);
-  const [stackState, { queueStack, closeXStacks, addToStackCount }]: any =
+  const [stackState, { loadStack, closeXStacks, addToStackCount }]: any =
     useStackStateContext();
   const [binderState, { setHoveredBinder, setSelectedBinder }]: any =
     useBinderStateContext();
@@ -37,7 +37,7 @@ export default function ShelfScene() {
   });
 
   function newShelf(path: string) {
-    if (stackState().queuedStack !== "none") {
+    if (stackState().loadingStack !== "none") {
       setStackList((prevList) => [
         ...prevList,
         () => {
@@ -46,7 +46,7 @@ export default function ShelfScene() {
           );
         },
       ]);
-      queueStack("none");
+      loadStack("none");
     }
   }
 
@@ -63,8 +63,8 @@ export default function ShelfScene() {
       if (stackState().stacksToClose > 0) {
         closeStacks(stackState().stacksToClose);
         setTimeout(loop, 100);
-      } else if (stackState().queuedStack !== "none") {
-        newShelf(stackState().queuedStack);
+      } else if (stackState().loadingStack !== "none") {
+        newShelf(stackState().loadingStack);
         setTimeout(loop, 100);
       } else {
         setTimeout(loop, 100);

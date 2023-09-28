@@ -44,7 +44,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   //Context States
   const [binderState, { setSelectedBinder, setHoveredBinder }]: any =
     useBinderStateContext();
-  const [stackState, { changeActiveStack, queueStack, addToStackCount }]: any =
+  const [stackState, { changeActiveStack, loadStack, addToStackCount }]: any =
     useStackStateContext();
   const [stackMap]: any = useStackMapContext();
 
@@ -124,8 +124,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       });
     });
 
-    addToStackCount(1);
-    stackNumber = stackState().stackCount;
+    // addToStackCount(1);
+    // stackNumber = stackState().stackCount;
 
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("touchstart", handleTouchStart);
@@ -414,7 +414,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
         }
       }}
       onclick={() => {
-        stackNum;
+        console.log(stackNum);
       }}
       onmouseleave={() => {
         stackHovered = false;

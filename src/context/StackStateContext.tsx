@@ -4,7 +4,7 @@ const StackStateContext = createContext();
 
 interface stackInfo {
   activeStack: any;
-  queuedStack: string | "none";
+  loadingStack: string | "none";
   stackCount: number;
   stacksToClose: number;
   shelfHeight: number;
@@ -14,7 +14,7 @@ interface stackInfo {
 export function StackStateProvider(props: any) {
   const [stackState, setStackState] = createSignal<stackInfo>({
       activeStack: null,
-      queuedStack: "none",
+      loadingStack: "none",
       stackCount: 0,
       stacksToClose: 0,
       shelfHeight: 0,
@@ -26,22 +26,22 @@ export function StackStateProvider(props: any) {
         changeActiveStack(input: any) {
           setStackState({
             activeStack: input,
-            queuedStack: stackState().queuedStack,
+            loadingStack: stackState().loadingStack,
             stackCount: stackState().stackCount,
             stacksToClose: stackState().stacksToClose,
             shelfHeight: stackState().shelfHeight,
             stackMapLoaded: stackState().stackMapLoaded,
           });
         },
-        queueStack(inputPath: string | "none") {
-          stackState().queuedStack = inputPath;
+        loadStack(inputPath: string | "none") {
+          stackState().loadingStack = inputPath;
         },
         addToStackCount(inputNumber: number) {
           const newStackCount = stackState().stackCount + inputNumber;
           // stackState().stackCount = newStackCount;
           setStackState({
             activeStack: stackState().activeStack,
-            queuedStack: stackState().queuedStack,
+            loadingStack: stackState().loadingStack,
             stackCount: newStackCount,
             stacksToClose: stackState().stacksToClose,
             shelfHeight: stackState().shelfHeight,
@@ -57,7 +57,7 @@ export function StackStateProvider(props: any) {
         updateStackMapLoadStatus(input: boolean) {
           setStackState({
             activeStack: stackState().activeStack,
-            queuedStack: stackState().queuedStack,
+            loadingStack: stackState().loadingStack,
             stackCount: stackState().stackCount,
             stacksToClose: stackState().stacksToClose,
             shelfHeight: stackState().shelfHeight,
