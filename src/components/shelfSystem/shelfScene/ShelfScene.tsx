@@ -16,7 +16,7 @@ import { useStackMapContext } from "../../../context/StackMapContext";
 import buildStackMap from "./buildStackMap";
 
 export default function ShelfScene() {
-  const [shelfList, setShelfList] = createSignal<any[]>([]);
+  const [stackList, setStackList] = createSignal<any[]>([]);
   const [stackState, { queueStack, closeXStacks, addToStackCount }]: any =
     useStackStateContext();
   const [binderState, { setHoveredBinder, setSelectedBinder }]: any =
@@ -27,7 +27,7 @@ export default function ShelfScene() {
   onMount(() => {
     buildStackMap();
 
-    setShelfList((prevList) => [
+    setStackList((prevList) => [
       ...prevList,
       <Shelf stackID="starting_none" />,
     ]);
@@ -36,7 +36,7 @@ export default function ShelfScene() {
 
   function newShelf(path: string) {
     if (stackState().queuedStack !== "none") {
-      setShelfList((prevList) => [
+      setStackList((prevList) => [
         ...prevList,
         () => {
           return <Shelf stackID={`${path}`} />;
@@ -47,10 +47,10 @@ export default function ShelfScene() {
   }
 
   function closeStacks(inputNumber: number) {
-    const newShelfArray = shelfList().slice(0, -inputNumber);
+    const newShelfArray = stackList().slice(0, -inputNumber);
     addToStackCount(-inputNumber);
     closeXStacks(0);
-    setShelfList(newShelfArray);
+    setStackList(newShelfArray);
     dragToStill();
   }
 
@@ -72,10 +72,10 @@ export default function ShelfScene() {
   return (
     <div class={styles.shelfSceneContainer}>
       <For
-        each={shelfList()}
+        each={stackList()}
         fallback={<div class={styles.loadingStacksText}></div>}
       >
-        {(item) => <div>{item()}</div>}
+        {(stack) => <div>{stack()}</div>}
       </For>
 
       <div
