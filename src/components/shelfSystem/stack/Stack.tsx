@@ -9,9 +9,10 @@ import BackBinder from "../backBinder/BackBinder";
 
 interface StackInputs {
   stackID: string;
+  stackNum: number;
 }
 
-export default function Stack({ stackID }: StackInputs) {
+export default function Stack({ stackID, stackNum }: StackInputs) {
   //Property to track the pixel width of cards that the stack is made of
   const [binderSize, setBinderSize] = createSignal<number>(0);
   //Property to track the pixel width of the whole stack
@@ -412,7 +413,9 @@ export default function Stack({ stackID }: StackInputs) {
           document.body.style.cursor = "grab";
         }
       }}
-      onclick={() => {}}
+      onclick={() => {
+        stackNum;
+      }}
       onmouseleave={() => {
         stackHovered = false;
         if (stackDragging() === "still") {

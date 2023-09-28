@@ -31,7 +31,7 @@ export default function ShelfScene() {
 
     setStackList((prevList) => [
       ...prevList,
-      <Stack stackID="starting_none" />,
+      <Stack stackID="starting_none" stackNum={stackState().stackCount} />,
     ]);
     updateStacks();
   });
@@ -41,7 +41,9 @@ export default function ShelfScene() {
       setStackList((prevList) => [
         ...prevList,
         () => {
-          return <Stack stackID={`${path}`} />;
+          return (
+            <Stack stackID={`${path}`} stackNum={stackState().stackCount} />
+          );
         },
       ]);
       queueStack("none");

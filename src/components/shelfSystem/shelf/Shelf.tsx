@@ -45,9 +45,7 @@ export default function Shelf({ stackID }: ShelfInputs) {
         "margin-top": upperMargin() > 0 ? `${upperMargin()}px` : "0px",
       }}
     >
-      <div class="stackSlider">
-        <Stack stackID={`${stackID}`} />
-      </div>
+      <div class="stackSlider"></div>
     </div>
   );
 }
