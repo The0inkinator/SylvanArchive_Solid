@@ -1,5 +1,6 @@
 import styles from "./shelfSceneStyles.module.css";
 import Shelf from "../shelf/Shelf";
+import Stack from "../stack/Stack";
 import {
   createSignal,
   createEffect,
@@ -14,6 +15,7 @@ import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import BackButton from "../backButton/BackButton";
 import { useStackMapContext } from "../../../context/StackMapContext";
 import buildStackMap from "./buildStackMap";
+import { style } from "solid-js/web";
 
 export default function ShelfScene() {
   const [stackList, setStackList] = createSignal<any[]>([]);
@@ -29,7 +31,7 @@ export default function ShelfScene() {
 
     setStackList((prevList) => [
       ...prevList,
-      <Shelf stackID="starting_none" />,
+      <Stack stackID="starting_none" />,
     ]);
     updateStacks();
   });
@@ -39,7 +41,7 @@ export default function ShelfScene() {
       setStackList((prevList) => [
         ...prevList,
         () => {
-          return <Shelf stackID={`${path}`} />;
+          return <Stack stackID={`${path}`} />;
         },
       ]);
       queueStack("none");
@@ -75,7 +77,7 @@ export default function ShelfScene() {
         each={stackList()}
         fallback={<div class={styles.loadingStacksText}></div>}
       >
-        {(stack) => <div>{stack()}</div>}
+        {(stack) => <div class={styles.stackSlider}>{stack()}</div>}
       </For>
 
       <div

@@ -412,9 +412,7 @@ export default function Stack({ stackID }: StackInputs) {
           document.body.style.cursor = "grab";
         }
       }}
-      onclick={() => {
-        console.log(binderContainer?.children);
-      }}
+      onclick={() => {}}
       onmouseleave={() => {
         stackHovered = false;
         if (stackDragging() === "still") {

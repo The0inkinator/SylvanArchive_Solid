@@ -9,3 +9,14 @@
   width: 100%;
   pointer-events: none;
 }
+
+.stackSlider {
+  height: calc(var(--BinderSize) * 1.6);
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  border: solid red;
+}
