@@ -1,7 +1,6 @@
 import { createEffect } from "solid-js";
 import { useStackMapContext } from "../../../context/StackMapContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
-import { create } from "domain";
 
 export default function buildStackMap() {
   const [stackMap, { makeStackMap }]: any = useStackMapContext();
