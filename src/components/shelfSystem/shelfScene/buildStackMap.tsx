@@ -58,8 +58,18 @@ export default function buildStackMap() {
         bgArts: bgArts[];
       }
 
-      let binderLookup: Record<string, number> = {};
-      let binderMaps: binderObject[] = [];
+      interface stackObject {
+        name: string;
+        children: string[];
+      }
+
+      interface stackMapSlots {
+        stackList: stackObject[];
+        binderList: binderObject[];
+      }
+
+      let finalStackList: stackObject[] = [];
+      let finalBinderList: binderObject[] = [];
 
       rawBindersMap.map((binderObject: rawBinderObject, index: number) => {
         let tempBgArts: bgArts[] = [];
@@ -91,9 +101,7 @@ export default function buildStackMap() {
           });
         }
 
-        binderLookup[`${binderObject.name}`] = index;
-
-        binderMaps[index] = {
+        finalBinderList[index] = {
           name: binderObject.name,
           displayName: binderObject.display_name,
           parent: binderObject.parent,
@@ -106,9 +114,27 @@ export default function buildStackMap() {
           },
           bgArts: tempBgArts,
         };
+
+        const tempChildrenBinderList: binderObject[] = rawBindersMap.filter(
+          (binder: rawBinderObject) => binder.parent === binderObject.name
+        );
+
+        const tempChildrenNameList: string[] = tempChildrenBinderList.map(
+          (binder) => {
+            return binder.name;
+          }
+        );
+
+        finalStackList[index] = {
+          name: binderObject.name,
+          children: tempChildrenNameList,
+        };
       });
 
-      const stackMap: any[] = [binderLookup, binderMaps];
+      const stackMap: stackMapSlots = {
+        stackList: finalStackList,
+        binderList: finalBinderList,
+      };
 
       makeStackMap(stackMap);
       updateStackMapLoadStatus(true);

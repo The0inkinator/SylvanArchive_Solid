@@ -98,20 +98,17 @@ export default function Stack({ stackRef, stackID }: StackInputs) {
 
     createEffect(() => {
       if (stackState().stackMapLoaded) {
-        let loadedBinderList = stackMap()[1].filter(
-          (binder: any) => binder.parent === stackID
+        let childrenOfThisStack = stackMap().stackList.filter(
+          (stack: any) => stack.name === stackID
+        );
+        let loadedBinderList = stackMap().binderList.filter((binder: any) =>
+          childrenOfThisStack[0].children.includes(binder.name)
         );
         if (loadedBinderList.length > 0) {
           setBinderList(loadedBinderList);
           setDefaults();
         } else {
-          stackID = "nothingHereYet_none";
-          console.log(stackID);
-          let loadedBinderList = stackMap()[1].filter(
-            (binder: any) => binder.name === stackID
-          );
-          setBinderList(loadedBinderList);
-          setDefaults();
+          console.error("No binder list");
         }
       }
     });

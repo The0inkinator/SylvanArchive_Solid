@@ -252,7 +252,7 @@ export default function Binder({
         console.log("Route to card list");
       }
     } else {
-      console.error("Stack already queded");
+      queueStack(`nothingHereYet_none`);
     }
   };
 
