@@ -11,46 +11,22 @@
 
 import styles from "./BackBinder.module.css";
 import { createSignal, createEffect, onMount, onCleanup } from "solid-js";
-import {
-  CardArtFetcher,
-  SmallCardFetcher,
-} from "../../../fetchers/ScryfallAPIFetcher";
+
 import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
 
-//TYPING
-interface CardFetcherInputs {
-  art: string;
-  artSet?: string;
-  artNum?: number;
-  artFace?: "front" | "back";
-}
 interface BinderInputs {
-  displayArt: CardFetcherInputs;
-  bgCards?: CardFetcherInputs[];
-  title: string;
-  binderName: string;
   binderNum: number;
   binderParentElement: any;
-  binderChildType: string;
 }
 
 //Main function
 export default function Binder({
-  displayArt,
-  bgCards,
-  title,
-  binderName,
   binderNum,
   binderParentElement,
-  binderChildType,
 }: BinderInputs) {
   //Empty styling properties for bgCards
-  let bgCardArray: any[] = [];
-  let bgCardPositions: string[] = ["translate(-50%, -50%)"];
-  let bgCardRotation: number = 0;
-  let bgCardSize: number = 65;
 
   //State to asynchronously pass elements card art/images
   const [displayArtUrl, setDisplayArtUrl] = createSignal<string | null>(null);
@@ -76,72 +52,6 @@ export default function Binder({
   //Define Empty functions to define on mount
   let handleHover: Function;
   let handleHoverOut: Function;
-
-  //Inputs primary display art
-  createEffect(async () => {
-    const url = await CardArtFetcher(displayArt.art, {
-      cardSet: displayArt?.artSet,
-      cardCollectNum: displayArt?.artNum,
-      cardFace: displayArt?.artFace,
-    });
-    setDisplayArtUrl(url);
-  });
-
-  //Inputs background card urls art into an array that can be mapped in the return
-  createEffect(async () => {
-    if (bgCards) {
-      bgCardArray = await Promise.all(
-        bgCards.map(async (card) => {
-          let cardInfo: string;
-          let mapCardSet: any;
-          let mapCardCollectNum: any;
-          let mapCardFace: any;
-          if (typeof card === "string") {
-            cardInfo = card;
-          } else {
-            cardInfo = card.art;
-            mapCardSet = card.artSet;
-            mapCardCollectNum = card.artNum;
-            mapCardFace = card.artFace;
-          }
-
-          return await SmallCardFetcher(cardInfo, {
-            cardSet: `${mapCardSet}`,
-            cardCollectNum: mapCardCollectNum,
-            cardFace: mapCardFace,
-          });
-        })
-      );
-      setBgCardUrls(bgCardArray);
-      setBgCardsLoaded(true);
-    }
-  });
-
-  createEffect(() => {
-    if (binderState().hoveredBinder > 0 && bgCardUrls().length === 0) {
-      setBgCardUrls(bgCardArray);
-    }
-  });
-
-  //Conditionally sets styling based on the number of Background Cards to be displayed
-  createEffect(() => {
-    if (bgCardUrls().length > 2) {
-      bgCardRotation = 20;
-      bgCardSize = 75;
-      bgCardPositions[1] = `translate(-65%, -88%) rotate(-${bgCardRotation}deg)`;
-      bgCardPositions[2] = `translate(-50%, -90%) rotate(-1deg)`;
-      bgCardPositions[3] = `translate(-35%, -87%) rotate(${bgCardRotation}deg)`;
-    } else if (bgCardUrls().length === 2) {
-      bgCardRotation = 15;
-      bgCardSize = 78;
-      bgCardPositions[1] = `translate(-65%, -86%) rotate(-${bgCardRotation}deg)`;
-      bgCardPositions[2] = `translate(-35%, -84%) rotate(${bgCardRotation}deg)`;
-    } else if (bgCardUrls().length === 1) {
-      bgCardRotation = 0;
-      bgCardSize = 85;
-      bgCardPositions[1] = `translate(-50%, -80%) rotate(-${bgCardRotation}deg)`;
-    }
-  });
 
   onMount(() => {
     if (binderContainer) {
@@ -240,21 +150,21 @@ export default function Binder({
       stackDragging() === "locked" &&
       binderState().selectedBinder === binderNum
     ) {
-      queueStackFromBinder();
+      // queueStackFromBinder();
     }
   });
 
-  const queueStackFromBinder = () => {
-    if (stackState().queuedStack === "none") {
-      if (binderChildType === "newStack") {
-        queueStack(`${binderName}`);
-      } else if (binderChildType === "cardList") {
-        console.log("Route to card list");
-      }
-    } else {
-      queueStack(`nothingHereYet_none`);
-    }
-  };
+  // const queueStackFromBinder = () => {
+  //   if (stackState().queuedStack === "none") {
+  //     if (binderChildType === "newStack") {
+  //       queueStack(`${binderName}`);
+  //     } else if (binderChildType === "cardList") {
+  //       console.log("Route to card list");
+  //     }
+  //   } else {
+  //     queueStack(`nothingHereYet_none`);
+  //   }
+  // };
 
   return (
     <>
@@ -300,27 +210,7 @@ export default function Binder({
               }}
             ></div>
             <div class={styles.overlay}></div>
-            <div class={styles.binderTitle}>{title}</div>
             <a class={styles.link}></a>
-          </div>
-
-          <div class={styles.popUpContainer}>
-            {bgCardsLoaded() &&
-              bgCardUrls().map((card: any, index: number) => {
-                return (
-                  <div
-                    class={styles.popUpCard}
-                    style={{
-                      "background-image": card ? `url(${card})` : "none",
-                      transform: binderActive()
-                        ? bgCardPositions[index + 1]
-                        : bgCardPositions[0],
-                      width: binderActive() ? `${bgCardSize}%` : `$50%`,
-                      height: binderActive() ? `${bgCardSize}%` : `$50%`,
-                    }}
-                  ></div>
-                );
-              })}
           </div>
         </div>
       </div>
