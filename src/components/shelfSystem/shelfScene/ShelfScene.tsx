@@ -36,6 +36,8 @@ export default function ShelfScene() {
 
   function newShelf(path: string) {
     if (stackState().loadingStack !== "none") {
+      addToStackCount(1);
+      loadStack("none");
       setStackList((prevList) => [
         ...prevList,
         () => {
@@ -44,7 +46,6 @@ export default function ShelfScene() {
           );
         },
       ]);
-      loadStack("none");
     }
   }
 
@@ -61,13 +62,10 @@ export default function ShelfScene() {
       if (stackState().stacksToClose > 0) {
         closeStacks(stackState().stacksToClose);
         setTimeout(loop, 100);
-      }
-
-      // else if (stackState().loadingStack !== "none") {
-      //   newShelf(stackState().loadingStack);
-      //   setTimeout(loop, 100);
-      // }
-      else {
+      } else if (stackState().loadingStack !== "none") {
+        newShelf(stackState().loadingStack);
+        setTimeout(loop, 100);
+      } else {
         setTimeout(loop, 100);
       }
     }
