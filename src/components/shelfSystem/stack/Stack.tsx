@@ -148,17 +148,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   });
 
   createEffect(() => {
-    if (stackState().stackCount > stackNumber && !previouslyMounted()) {
-      setPreviouslyMounted(true);
-    }
-  });
-
-  createEffect(() => {
-    if (stackState().stackCount === stackNumber && previouslyMounted()) {
-      if (thisStack) {
+    if (stackState().stackCount === stackNum && !thisStackActive()) {
+      if (thisStack && stackState().activeStack !== thisStack) {
         changeActiveStack(thisStack);
       }
-      setPreviouslyMounted(false);
       setThisStackActive(true);
       setSelectedBinder(0);
       setHoveredBinder(0);
@@ -413,9 +406,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
           document.body.style.cursor = "grab";
         }
       }}
-      onclick={() => {
-        console.log(stackNum);
-      }}
+      onclick={() => {}}
       onmouseleave={() => {
         stackHovered = false;
         if (stackDragging() === "still") {
