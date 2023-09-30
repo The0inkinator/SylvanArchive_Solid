@@ -68,6 +68,7 @@ export default function ShelfScene() {
   function closeStacks(inputNumber: number) {
     let scrolling: boolean = true;
     let scrollingCheck: any;
+
     function manageScrolling() {
       clearTimeout(scrollingCheck);
       scrollingCheck = setTimeout(() => {
@@ -83,15 +84,18 @@ export default function ShelfScene() {
     setTimeout(() => {
       window.addEventListener("scroll", manageScrolling);
     }, 200);
+
     const currentBottomMargin = parseInt(
       shelfSceneContainer?.style.paddingBottom as string
     );
+
     if (shelfSceneContainer) {
       shelfSceneContainer.style.transition = "padding 0s";
       shelfSceneContainer.style.paddingBottom = `${
         currentBottomMargin + shelfHeight
       }px`;
     }
+
     const newShelfArray = stackList().slice(0, -inputNumber);
     addToStackCount(-inputNumber);
     closeXStacks(0);
@@ -101,7 +105,16 @@ export default function ShelfScene() {
 
   createEffect(() => {
     if (stackState().stacksToClose > 0) {
-      closeStacks(stackState().stacksToClose);
+      const countLessHovered =
+        stackState().stackCount - stackState().hoveredStack;
+      const adjustedStackCount = (() => {
+        if (countLessHovered > 0) {
+          return countLessHovered;
+        } else {
+          return 1;
+        }
+      })();
+      closeStacks(adjustedStackCount);
     }
   });
 

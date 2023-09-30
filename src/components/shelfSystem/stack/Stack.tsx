@@ -46,7 +46,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   //Context States
   const [binderState, { setSelectedBinder, setHoveredBinder }]: any =
     useBinderStateContext();
-  const [stackState, { changeActiveStack, loadStack, addToStackCount }]: any =
+  const [stackState, { changeActiveStack, setHoveredStack }]: any =
     useStackStateContext();
   const [stackMap]: any = useStackMapContext();
 
@@ -123,9 +123,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       });
     });
 
-    // addToStackCount(1);
-    // stackNumber = stackState().stackCount;
-
+    window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("mousemove", handleMouseMove);
@@ -162,6 +160,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   });
 
   onCleanup(() => {
+    window.removeEventListener("scroll", handleScroll);
     window.removeEventListener("mousedown", handleMouseDown);
     window.removeEventListener("touchstart", handleTouchStart);
     window.removeEventListener("mousemove", handleMouseMove);
@@ -171,7 +170,19 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     window.removeEventListener("dblclick", handleDoubleClick);
   });
 
-  //handles mouseDown
+  const handleScroll = (event: any) => {
+    if (thisStack) {
+      const componentRect = thisStack.getBoundingClientRect();
+      const windowCenter = window.innerHeight / 2;
+      if (
+        windowCenter > componentRect.top &&
+        windowCenter < componentRect.bottom
+      ) {
+        setHoveredStack(stackNum);
+      }
+    }
+  };
+
   const handleMouseDown = (event: MouseEvent) => {
     if (thisStack) {
       const componentRect = thisStack.getBoundingClientRect();
@@ -191,7 +202,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //handles touchStart
   const handleTouchStart = (event: TouchEvent) => {
     if (thisStack && event.touches.length === 1) {
       const componentRect = thisStack.getBoundingClientRect();
@@ -209,7 +219,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //handles mouseMove
   const handleMouseMove = (event: MouseEvent) => {
     if (thisStackActive()) {
       if (
@@ -228,7 +237,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //handles touchMove
   const handleTouchMove = (event: TouchEvent) => {
     if (thisStackActive()) {
       if (
@@ -248,7 +256,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //handles mouseUp
   const handleMouseUp = (event: MouseEvent) => {
     localStackDragging = false;
     if (thisStackActive()) {
@@ -264,7 +271,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //handles touchEnd
   const handleTouchEnd = (event: TouchEvent) => {
     localStackDragging = false;
     if (thisStackActive()) {

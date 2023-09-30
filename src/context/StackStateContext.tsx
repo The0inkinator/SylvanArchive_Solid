@@ -8,6 +8,7 @@ interface stackInfo {
   stackCount: number;
   stacksToClose: number;
   stackMapLoaded: boolean;
+  hoveredStack: number;
 }
 
 export function StackStateProvider(props: any) {
@@ -17,6 +18,7 @@ export function StackStateProvider(props: any) {
       stackCount: 1,
       stacksToClose: 0,
       stackMapLoaded: false,
+      hoveredStack: 1,
     }),
     stackStateList = [
       stackState,
@@ -50,6 +52,12 @@ export function StackStateProvider(props: any) {
           setStackState((prevState) => ({
             ...prevState,
             stackMapLoaded: input,
+          }));
+        },
+        setHoveredStack(inputNumber: number) {
+          setStackState((prevState) => ({
+            ...prevState,
+            hoveredStack: inputNumber,
           }));
         },
       },
