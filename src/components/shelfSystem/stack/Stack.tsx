@@ -24,7 +24,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   //Tracks if mouse is over stack updated with a create effect in the body of the function
   let stackHovered: boolean = false;
   let localStackDragging: boolean = false;
-  let stackNumber: number;
   //Context state for dragging
   const [
     stackDragging,
@@ -53,11 +52,11 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   //State for slide function
   const [distanceToSlide, setDistanceToSlide] = createSignal<number>(0);
   const [canSlide, setCanSlide] = createSignal<boolean>(false);
-  const [thisStackActive, setThisStackActive] = createSignal<boolean>(true);
+  // const [thisStackActive, setThisStackActive] = createSignal<boolean>(false);
   const [binderList, setBinderList] = createSignal<any[]>([]);
   const [selectedBinderCtr, setSelectedBinderCtr] = createSignal<number>(0);
   const [stackDataLoaded, setStackDataLoaded] = createSignal<boolean>(false);
-
+  let thisStackActive: boolean = false;
   //typing for refs
 
   //Function that: Sets the stack pixel width, Positions the stack in the screen center, sets the collision boundries for the stack
@@ -66,6 +65,31 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   //Calls setDefaults and adds event listeners to handle clicking and dragging of the stack
 
   onMount(() => {
+    createEffect(() => {
+      if (stackState().stackMapLoaded && !stackDataLoaded()) {
+        let childrenOfThisStack = stackMap().stackList.filter(
+          (stack: any) => stack.name === stackID
+        );
+        let loadedBinderList = stackMap().binderList.filter((binder: any) =>
+          childrenOfThisStack[0].children.includes(binder.name)
+        );
+
+        const errorBinder = stackMap().binderList.filter(
+          (binder: any) => binder.name === "nothingHereYet_none"
+        );
+
+        setStackDataLoaded(true);
+
+        if (loadedBinderList.length > 0) {
+          setBinderList(loadedBinderList);
+          setDefaults();
+        } else {
+          setBinderList(errorBinder);
+          setDefaults();
+        }
+      }
+    });
+
     function setDefaults() {
       const windowWidth = window.innerWidth;
       if (thisStack) {
@@ -96,31 +120,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       setStackCollision({ left: collisionLeft, right: collisionRight });
     }
 
-    createEffect(() => {
-      if (stackState().stackMapLoaded && !stackDataLoaded()) {
-        let childrenOfThisStack = stackMap().stackList.filter(
-          (stack: any) => stack.name === stackID
-        );
-        let loadedBinderList = stackMap().binderList.filter((binder: any) =>
-          childrenOfThisStack[0].children.includes(binder.name)
-        );
-
-        const errorBinder = stackMap().binderList.filter(
-          (binder: any) => binder.name === "nothingHereYet_none"
-        );
-
-        setStackDataLoaded(true);
-
-        if (loadedBinderList.length > 0) {
-          setBinderList(loadedBinderList);
-          setDefaults();
-        } else {
-          setBinderList(errorBinder);
-          setDefaults();
-        }
-      }
-    });
-
     //handles window resize to update all relevant properties
     createEffect(() => {
       window.addEventListener("resize", setDefaults);
@@ -142,28 +141,29 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     window.addEventListener("touchend", handleTouchEnd);
     window.addEventListener("dblclick", handleDoubleClick);
 
-    changeActiveStack(thisStack);
-    setHoveredBinder(0);
-    setSelectedBinder(0);
-
-    if (thisStack) {
-      thisStack.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
-  });
-
-  createEffect(() => {
-    if (stackState().stackCount === stackNum && !thisStackActive()) {
-      if (thisStack && stackState().activeStack !== thisStack) {
-        changeActiveStack(thisStack);
-        thisStack.scrollIntoView({
-          block: "center",
-          behavior: "smooth",
-        });
+    createEffect(() => {
+      if (thisStack) {
+        if (stackState().stackCount === stackNum && !thisStackActive) {
+          console.log(`${stackNum} is active`);
+          thisStackActive = true;
+          changeActiveStack(thisStack);
+          setSelectedBinder(0);
+          setHoveredBinder(0);
+          thisStack.scrollIntoView({
+            block: "center",
+            behavior: "smooth",
+          });
+        }
       }
-      setThisStackActive(true);
-      setSelectedBinder(0);
-      setHoveredBinder(0);
-    }
+    });
+
+    createEffect(() => {
+      if (thisStack) {
+        if (stackState().activeStack !== thisStack) {
+          thisStackActive = false;
+        }
+      }
+    });
   });
 
   onCleanup(() => {
@@ -195,7 +195,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       const componentRect = thisStack.getBoundingClientRect();
 
       if (
-        thisStackActive() &&
+        thisStackActive &&
         event.clientX >= componentRect.left &&
         event.clientX <= componentRect.right &&
         event.clientY >= componentRect.top &&
@@ -214,7 +214,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       const componentRect = thisStack.getBoundingClientRect();
 
       if (
-        thisStackActive() &&
+        thisStackActive &&
         event.touches[0].clientX >= componentRect.left &&
         event.touches[0].clientX <= componentRect.right &&
         event.touches[0].clientY >= componentRect.top &&
@@ -227,7 +227,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   };
 
   const handleMouseMove = (event: MouseEvent) => {
-    if (thisStackActive()) {
+    if (thisStackActive) {
       if (
         localStackDragging &&
         stackDragging() !== "dragging" &&
@@ -245,7 +245,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   };
 
   const handleTouchMove = (event: TouchEvent) => {
-    if (thisStackActive()) {
+    if (thisStackActive) {
       if (
         localStackDragging &&
         stackDragging() !== "dragging" &&
@@ -265,7 +265,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   const handleMouseUp = (event: MouseEvent) => {
     localStackDragging = false;
-    if (thisStackActive()) {
+    if (thisStackActive) {
       if (!stackHovered) {
         document.body.style.cursor = "auto";
       } else {
@@ -280,7 +280,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   const handleTouchEnd = (event: TouchEvent) => {
     localStackDragging = false;
-    if (thisStackActive()) {
+    if (thisStackActive) {
       if (stackDragging() === "dragging") {
         dragToDrifting();
       }
@@ -288,7 +288,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   };
 
   const handleDoubleClick = (event: MouseEvent) => {
-    if (thisStackActive() && stackHovered) {
+    if (thisStackActive && stackHovered) {
       slideCheck();
     }
     if (canSlide() && stackDragging() === "still") {
@@ -296,38 +296,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   };
 
-  //Function takes in the stack's screen position and prevents it from exceeding the set boundries
-  function collisionCheck(pos: number) {
-    if (pos > stackCollision().left) {
-      return stackCollision().left as number;
-    } else if (pos < stackCollision().right) {
-      return stackCollision().right as number;
-    } else {
-      return pos;
-    }
-  }
-
-  function capDriftSpeed(pos: number) {
-    if (Math.abs(pos) > 20) {
-      if (pos > 0) {
-        return 20;
-      } else if (pos < 0) {
-        return -20;
-      } else {
-        return 0;
-      }
-    } else {
-      return pos;
-    }
-  }
-
-  //This function is called when mouseDown and will loop while mouse down to track the stack's "speed"
-  //Once mouseUp the function contiues to loop rather than tracking the "speed" it:
-  //A. Moves the stack in the direction it was being dragged and then B. Reduces the speed and loops.
-  //Once the speed falls below one it will revert the stack state back to "still"
-  //This creates an ice-rink like effect
   function drift() {
-    if (thisStackActive()) {
+    if (thisStackActive) {
       setSelectedBinder(0);
       function loop() {
         if (stackDragging() === "dragging") {
@@ -362,7 +332,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   }
 
   function slideCheck() {
-    if (thisStackActive()) {
+    if (thisStackActive) {
       setCanSlide(true);
       let timer = 40;
       function loop() {
@@ -376,7 +346,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   }
 
   function slide(binder: number) {
-    if (thisStackActive() && stackDragging() === "still") {
+    if (thisStackActive && stackDragging() === "still") {
       dragToDrifting();
       const halfBinder = binderSize() / 2;
       const screenCenter = window.innerWidth / 2;
@@ -404,13 +374,38 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
   }
 
-  createEffect(() => {
-    if (thisStack === stackState().activeStack) {
-      setThisStackActive(true);
+  //Function takes in the stack's screen position and prevents it from exceeding the set boundries
+  function collisionCheck(pos: number) {
+    if (pos > stackCollision().left) {
+      return stackCollision().left as number;
+    } else if (pos < stackCollision().right) {
+      return stackCollision().right as number;
     } else {
-      setThisStackActive(false);
+      return pos;
     }
-  });
+  }
+
+  function capDriftSpeed(pos: number) {
+    if (Math.abs(pos) > 20) {
+      if (pos > 0) {
+        return 20;
+      } else if (pos < 0) {
+        return -20;
+      } else {
+        return 0;
+      }
+    } else {
+      return pos;
+    }
+  }
+
+  // createEffect(() => {
+  //   if (thisStack === stackState().activeStack) {
+  //     setThisStackActive(true);
+  //   } else {
+  //     setThisStackActive(false);
+  //   }
+  // });
 
   return (
     <div

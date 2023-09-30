@@ -38,6 +38,10 @@ export default function ShelfScene() {
     setMargins();
   });
 
+  // createEffect(() => {
+  //   console.log(stackState().stackCount);
+  // });
+
   function setMargins() {
     setTimeout(() => {
       if (shelfSceneContainer) {
