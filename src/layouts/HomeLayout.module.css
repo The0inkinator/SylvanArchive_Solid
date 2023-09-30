@@ -1,13 +1,5 @@
-.layout {
-  position: relative;
-}
-
 .contentContainer {
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* position: relative; */
-  overflow: hidden;
-  outline: solid blue;
+  overflow-x: hidden;
 }
 
 .overlayGradient {

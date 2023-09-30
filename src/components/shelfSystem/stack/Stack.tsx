@@ -69,11 +69,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   onMount(() => {
     function setDefaults() {
       const windowWidth = window.innerWidth;
-      const remSize = 16;
       if (thisStack) {
         const rootStyles = getComputedStyle(thisStack);
         setBinderSize(
-          parseInt(rootStyles.getPropertyValue("--BinderSize")) * remSize
+          parseInt(rootStyles.getPropertyValue("--BinderSize")) * 16 //rem size
         );
       }
 
@@ -151,6 +150,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     if (stackState().stackCount === stackNum && !thisStackActive()) {
       if (thisStack && stackState().activeStack !== thisStack) {
         changeActiveStack(thisStack);
+        thisStack.scrollIntoView({
+          block: "center",
+          behavior: "smooth",
+        });
       }
       setThisStackActive(true);
       setSelectedBinder(0);
