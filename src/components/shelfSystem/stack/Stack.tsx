@@ -12,57 +12,50 @@ interface StackInputs {
   stackNum: number;
 }
 
+interface stackCollisionInputs {
+  left: number;
+  right: number;
+}
+
 export default function Stack({ stackID, stackNum }: StackInputs) {
-  let thisStack: HTMLDivElement | null = null;
-  let binderContainer: HTMLDivElement | null = null;
-  //Property to track the pixel width of cards that the stack is made of
-  const [binderSize, setBinderSize] = createSignal<number>(0);
-  //Property to track the pixel width of the whole stack
-  const [stackWidth, setStackWidth] = createSignal<number>(0);
-  //Property to find the distance from mouse to stack corner
-  const [stackOffsetX, setStackOffsetX] = createSignal<number>(0);
-  //Tracks if mouse is over stack updated with a create effect in the body of the function
-  let stackHovered: boolean = false;
-  let localStackDragging: boolean = false;
-  //Context state for dragging
+  //Context States
   const [
     stackDragging,
     { dragToStill, dragToDragging, dragToDrifting, dragToLocked },
   ]: any = useStackDraggingContext();
-  //Number that directly controls where the stack is on screen through its "left" style
-  const [stackPosition, setStackPosition] = createSignal<number>(0);
-  //Secondary position for the handleMouseMove function
-  const [newStackPosition, setNewStackPosition] = createSignal<number>(0);
-  //Number that stores the most recent position of the stack to calculate its speed
-  const [stackDrift, setStackDrift] = createSignal<number>(0);
-  //Number that represents how fast the stack was being dragged when it is released
-  const [stackDriftSpeed, setStackDriftSpeed] = createSignal<number>(0);
-  //Object that marks the farthest the stack can be dragged left or right
-  const [stackCollision, setStackCollision] = createSignal<{
-    left: number;
-    right: number;
-  }>({ left: 0, right: 0 });
-  //Context States
   const [binderState, { setSelectedBinder, setHoveredBinder }]: any =
     useBinderStateContext();
   const [stackState, { changeActiveStack, setHoveredStack }]: any =
     useStackStateContext();
   const [stackMap]: any = useStackMapContext();
 
-  //State for slide function
-  const [distanceToSlide, setDistanceToSlide] = createSignal<number>(0);
-  const [canSlide, setCanSlide] = createSignal<boolean>(false);
-  // const [thisStackActive, setThisStackActive] = createSignal<boolean>(false);
-  const [binderList, setBinderList] = createSignal<any[]>([]);
-  const [selectedBinderCtr, setSelectedBinderCtr] = createSignal<number>(0);
+  //State
+  const [stackWidth, setStackWidth] = createSignal<number>(0);
+  const [stackPosition, setStackPosition] = createSignal<number>(0);
   const [stackDataLoaded, setStackDataLoaded] = createSignal<boolean>(false);
+  const [binderList, setBinderList] = createSignal<any[]>([]);
+
+  //Ref Variables
+  let thisStack: HTMLDivElement | null = null;
+  let binderContainer: HTMLDivElement | null = null;
+  //Listener Variables
   let thisStackActive: boolean = false;
-  //typing for refs
+  let stackHovered: boolean = false;
+  let localStackDragging: boolean = false;
+  //Position Control Variables
+  let stackOffsetX: number = 0;
+  let newStackPosition: number = 0;
+  let binderSize: number = 0;
+  let selectedBinderCtr: number = 0;
+  let stackCollision: stackCollisionInputs = { left: 0, right: 0 };
 
-  //Function that: Sets the stack pixel width, Positions the stack in the screen center, sets the collision boundries for the stack
-  //Called both on mount and on screen resize
+  //Drift Function Variables
+  let stackDrift: number = 0;
+  let stackDriftSpeed: number = 0;
 
-  //Calls setDefaults and adds event listeners to handle clicking and dragging of the stack
+  //Slide Function Variables
+  let canSlide: boolean = false;
+  let distanceToSlide: number = 0;
 
   onMount(() => {
     createEffect(() => {
@@ -94,12 +87,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       const windowWidth = window.innerWidth;
       if (thisStack) {
         const rootStyles = getComputedStyle(thisStack);
-        setBinderSize(
-          parseInt(rootStyles.getPropertyValue("--BinderSize")) * 16 //rem size
-        );
+        binderSize = parseInt(rootStyles.getPropertyValue("--BinderSize")) * 16; //rem size
       }
 
-      setStackWidth(binderList().length * binderSize());
+      setStackWidth(binderList().length * binderSize);
       const stackStartingPos = () => {
         if (windowWidth - stackWidth() >= 0) {
           return windowWidth / 2 - stackWidth() / 2;
@@ -108,16 +99,15 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
         }
       };
 
-      if (selectedBinderCtr() > 0) {
-        const currentCenter: number = windowWidth / 2 - selectedBinderCtr();
+      if (selectedBinderCtr > 0) {
+        const currentCenter: number = windowWidth / 2 - selectedBinderCtr;
         setStackPosition(currentCenter);
       } else {
         setStackPosition(stackStartingPos);
       }
-      const collisionLeft = windowWidth / 2 - binderSize() / 2;
-      const collisionRight =
-        windowWidth / 2 - (stackWidth() - binderSize() / 2);
-      setStackCollision({ left: collisionLeft, right: collisionRight });
+      const collisionLeft = windowWidth / 2 - binderSize / 2;
+      const collisionRight = windowWidth / 2 - (stackWidth() - binderSize / 2);
+      stackCollision = { left: collisionLeft, right: collisionRight };
     }
 
     //handles window resize to update all relevant properties
@@ -144,7 +134,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     createEffect(() => {
       if (thisStack) {
         if (stackState().stackCount === stackNum && !thisStackActive) {
-          console.log(`${stackNum} is active`);
           thisStackActive = true;
           changeActiveStack(thisStack);
           setSelectedBinder(0);
@@ -203,7 +192,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       ) {
         localStackDragging = true;
         slideCheck();
-        setStackOffsetX(event.clientX - stackPosition());
+        stackOffsetX = event.clientX - stackPosition();
         document.body.style.cursor = "grabbing";
       }
     }
@@ -221,7 +210,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
         event.touches[0].clientY <= componentRect.bottom
       ) {
         localStackDragging = true;
-        setStackOffsetX(event.touches[0].clientX - stackPosition());
+        stackOffsetX = event.touches[0].clientX - stackPosition();
       }
     }
   };
@@ -238,8 +227,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       }
       if (stackDragging() === "dragging") {
         const mousePosX = event.clientX;
-        setNewStackPosition(collisionCheck(mousePosX - stackOffsetX()));
-        setStackPosition(collisionCheck(newStackPosition()));
+        newStackPosition = collisionCheck(mousePosX - stackOffsetX);
+        setStackPosition(collisionCheck(newStackPosition));
       }
     }
   };
@@ -257,8 +246,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       if (stackDragging() === "dragging") {
         event.preventDefault();
         const mousePosX = event.touches[0].clientX;
-        setNewStackPosition(collisionCheck(mousePosX - stackOffsetX()));
-        setStackPosition(collisionCheck(newStackPosition()));
+        newStackPosition = collisionCheck(mousePosX - stackOffsetX);
+        setStackPosition(collisionCheck(newStackPosition));
       }
     }
   };
@@ -291,7 +280,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     if (thisStackActive && stackHovered) {
       slideCheck();
     }
-    if (canSlide() && stackDragging() === "still") {
+    if (canSlide && stackDragging() === "still") {
       slide(binderState().selectedBinder);
     }
   };
@@ -301,15 +290,15 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       setSelectedBinder(0);
       function loop() {
         if (stackDragging() === "dragging") {
-          setStackDriftSpeed(capDriftSpeed(stackDrift() - stackPosition()));
+          stackDriftSpeed = capDriftSpeed(stackDrift - stackPosition());
           const newStackDrift = stackPosition();
-          setStackDrift(newStackDrift);
+          stackDrift = newStackDrift;
           setTimeout(loop, 10);
         } else if (stackDragging() === "drifting") {
-          if (Math.abs(stackDriftSpeed()) > 1) {
+          if (Math.abs(stackDriftSpeed) > 1) {
             //Adjusting the single integer at the end of newStackSpeed will change the stack's "friction"
             //A higher number means lower "friction" and visa versa. Numbers below 1 will cause no friction
-            const newStackSpeed = stackDriftSpeed() - stackDriftSpeed() / 16;
+            const newStackSpeed = stackDriftSpeed - stackDriftSpeed / 16;
             const newStackPos = (() => {
               if (newStackSpeed > 0) {
                 return stackPosition() - Math.abs(newStackSpeed);
@@ -318,12 +307,12 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
               }
             })();
             setStackPosition(collisionCheck(newStackPos as number));
-            setStackDriftSpeed(newStackSpeed);
+            stackDriftSpeed = newStackSpeed;
             // console.log(stackDriftSpeed());
             setTimeout(loop, 5);
-          } else if (stackDragging() === "drifting" && stackDriftSpeed() < 1) {
+          } else if (stackDragging() === "drifting" && stackDriftSpeed < 1) {
             dragToStill();
-            setStackDriftSpeed(0);
+            stackDriftSpeed = 0;
           }
         }
       }
@@ -333,13 +322,13 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   function slideCheck() {
     if (thisStackActive) {
-      setCanSlide(true);
+      canSlide = true;
       let timer = 40;
       function loop() {
         if (timer > 0) {
           timer = timer - 1;
           setTimeout(loop, 1);
-        } else setCanSlide(false);
+        } else canSlide = false;
       }
       loop();
     }
@@ -348,25 +337,22 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   function slide(binder: number) {
     if (thisStackActive && stackDragging() === "still") {
       dragToDrifting();
-      const halfBinder = binderSize() / 2;
+      const halfBinder = binderSize / 2;
       const screenCenter = window.innerWidth / 2;
-      const binderInStack = binderSize() * binder - halfBinder;
-      setSelectedBinderCtr(binderInStack);
-      setDistanceToSlide(screenCenter - (stackPosition() + binderInStack));
+      const binderInStack = binderSize * binder - halfBinder;
+      selectedBinderCtr = binderInStack;
+      distanceToSlide = screenCenter - (stackPosition() + binderInStack);
       function loop() {
-        if (Math.abs(distanceToSlide()) > 1) {
+        if (Math.abs(distanceToSlide) > 1) {
           let slideIncrement: number;
-          setDistanceToSlide(screenCenter - (stackPosition() + binderInStack));
-          slideIncrement = distanceToSlide() / 8;
-          setNewStackPosition(collisionCheck(stackPosition() + slideIncrement));
-          setStackPosition(newStackPosition());
+          distanceToSlide = screenCenter - (stackPosition() + binderInStack);
+          slideIncrement = distanceToSlide / 8;
+          newStackPosition = collisionCheck(stackPosition() + slideIncrement);
+          setStackPosition(newStackPosition);
 
           setTimeout(loop, 1);
         } else {
           dragToLocked();
-          // if (stackDragging() === "locked") {
-          //   dragToStill();
-          // }
         }
       }
 
@@ -376,10 +362,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   //Function takes in the stack's screen position and prevents it from exceeding the set boundries
   function collisionCheck(pos: number) {
-    if (pos > stackCollision().left) {
-      return stackCollision().left as number;
-    } else if (pos < stackCollision().right) {
-      return stackCollision().right as number;
+    if (pos > stackCollision.left) {
+      return stackCollision.left;
+    } else if (pos < stackCollision.right) {
+      return stackCollision.right;
     } else {
       return pos;
     }
@@ -398,14 +384,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       return pos;
     }
   }
-
-  // createEffect(() => {
-  //   if (thisStack === stackState().activeStack) {
-  //     setThisStackActive(true);
-  //   } else {
-  //     setThisStackActive(false);
-  //   }
-  // });
 
   return (
     <div
