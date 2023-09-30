@@ -26,9 +26,6 @@ export default function ShelfScene() {
     useBinderStateContext();
   const [stackDragging, { dragToStill }]: any = useStackDraggingContext();
   const [stackMap, { makeStackMap }]: any = useStackMapContext();
-  const [isLoadingStyling, setIsLoadingStyling] = createSignal<boolean>(true);
-  const [windowScrolling, setWindowScrolling] = createSignal<boolean>(false);
-  let currentStackCount: number = 1;
 
   onMount(() => {
     buildStackMap();
@@ -52,12 +49,6 @@ export default function ShelfScene() {
       }
     }, 1);
   }
-
-  createEffect(() => {
-    if (currentStackCount !== stackState().stackCount) {
-      currentStackCount = stackState().stackCount;
-    }
-  });
 
   function newShelf(path: string) {
     if (stackState().loadingStack !== "none") {
