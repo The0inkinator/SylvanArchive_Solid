@@ -18,6 +18,7 @@ import {
 import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
+import { useStackMapContext } from "~/context/StackMapContext";
 
 //TYPING
 interface CardFetcherInputs {
@@ -36,6 +37,11 @@ interface BinderInputs {
   binderChildType: string;
 }
 
+interface binderOutput {
+  outputName: string;
+  outputType: string;
+}
+
 //Main function
 export default function Binder({
   displayArt,
@@ -51,6 +57,7 @@ export default function Binder({
   let bgCardPositions: string[] = ["translate(-50%, -50%)"];
   let bgCardRotation: number = 0;
   let bgCardSize: number = 65;
+  let binderOutput: binderOutput;
 
   //State to asynchronously pass elements card art/images
   const [displayArtUrl, setDisplayArtUrl] = createSignal<string | null>(null);
@@ -64,6 +71,7 @@ export default function Binder({
     useBinderStateContext();
   const [stackState, { changeActiveStack, loadStack }]: any =
     useStackStateContext();
+  const [stackMap]: any = useStackMapContext();
   const [stackDragging, { dragToStill }]: any = useStackDraggingContext();
   const [thisBinderSelected, setThisBinderSelected] = createSignal<
     true | false | "waiting"
@@ -148,6 +156,19 @@ export default function Binder({
       binderContainer.addEventListener("dblclick", handleDoubleClick);
     }
 
+    // //load binder's output
+    const stackFromBinder = stackMap().stackList.filter(
+      (stackToLoad: any) => stackToLoad.name === binderName
+    );
+
+    if (stackFromBinder.length !== 1) {
+      binderOutput = { outputName: "nothingHereYet", outputType: "newStack" };
+    } else {
+      const nameToLoad = stackFromBinder[0].name;
+      const typeToLoad = binderChildType;
+      binderOutput = { outputName: nameToLoad, outputType: typeToLoad };
+    }
+
     //fade in animation
     const stackContainer = binderParentElement.children;
     const binderCount = stackContainer[0].children.length;
@@ -173,6 +194,25 @@ export default function Binder({
     if (stackDragging() === "still") {
       setSelectedBinder(binderNum);
     }
+
+    function loadStackFromBinder() {
+      function loop() {
+        if (stackDragging() !== "locked") {
+          setTimeout(loop, 1);
+        } else {
+          if (binderOutput.outputType === "newStack") {
+            loadStack(binderOutput.outputName);
+          } else if (binderOutput.outputType === "cardList") {
+            console.log("new card List");
+          } else {
+            console.log("endpoint");
+          }
+        }
+      }
+      loop();
+    }
+
+    loadStackFromBinder();
   };
 
   //HANDLE BINDER VISUALS
@@ -235,27 +275,41 @@ export default function Binder({
     }
   });
 
-  createEffect(() => {
-    if (
-      stackDragging() === "locked" &&
-      binderState().selectedBinder === binderNum
-    ) {
-      dragToStill();
-      loadStackFromBinder();
-    }
-  });
+  // createEffect(() => {
+  //   if (
+  //     stackDragging() === "locked" &&
+  //     binderState().selectedBinder === binderNum
+  //   ) {
+  //     console.log(`%c ${binderOutput}`, "color: green");
+  //     dragToStill();
+  //     loadStackFromBinder();
+  //   }
+  // });
 
-  const loadStackFromBinder = () => {
-    if (stackState().loadingStack === "none") {
-      if (binderChildType === "newStack") {
-        loadStack(`${binderName}`);
-      } else if (binderChildType === "cardList") {
-        console.log("Route to card list");
-      }
-    } else {
-      loadStack(`nothingHereYet_none`);
-    }
-  };
+  // const loadStackFromBinder = () => {
+  //   const stackFromBinder = stackMap().stackList.filter(
+  //     (stackToLoad: any) => stackToLoad.name === binderName
+  //   );
+
+  //   if (stackFromBinder.length !== 1) {
+  //     console.error("Single stack target not found");
+  //     loadStack(`nothingHereYet_none`);
+  //   } else {
+  //     const nameToLoad = stackFromBinder[0].name;
+  //     const typeToLoad = binderChildType;
+  //     console.log(`The stack about to load is ${nameToLoad}`);
+
+  //     if (typeToLoad === "newStack") {
+  //       console.log("newStack");
+  //       loadStack(`${nameToLoad}`);
+  //     } else if (typeToLoad === "cardList") {
+  //       console.log("cardList");
+  //     } else {
+  //       console.log("Error or empty");
+  //       loadStack(`nothingHereYet_none`);
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -278,6 +332,7 @@ export default function Binder({
             setHoveredBinder(0);
           }
         }}
+        onclick={() => {}}
         style={{
           opacity: binderVisible() ? "100%" : binderAnimating() ? "0%" : "50%",
         }}

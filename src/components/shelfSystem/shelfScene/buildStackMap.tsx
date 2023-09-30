@@ -136,6 +136,7 @@ export default function buildStackMap() {
       };
 
       makeStackMap(stackMap);
+      console.log(stackMap);
       updateStackMapLoadStatus(true);
     } catch (err) {
       console.error(err);

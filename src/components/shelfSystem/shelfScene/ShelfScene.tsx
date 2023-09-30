@@ -51,18 +51,14 @@ export default function ShelfScene() {
   }
 
   function newShelf(path: string) {
-    if (stackState().loadingStack !== "none") {
-      addToStackCount(1);
-      loadStack("none");
-      setStackList((prevList) => [
-        ...prevList,
-        () => {
-          return (
-            <Stack stackID={`${path}`} stackNum={stackState().stackCount} />
-          );
-        },
-      ]);
-    }
+    loadStack("none");
+    addToStackCount(1);
+    setStackList((prevList) => [
+      ...prevList,
+      () => {
+        return <Stack stackID={`${path}`} stackNum={stackState().stackCount} />;
+      },
+    ]);
   }
 
   function closeStacks(inputNumber: number) {

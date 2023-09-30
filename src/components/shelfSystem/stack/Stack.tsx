@@ -56,8 +56,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   const [thisStackActive, setThisStackActive] = createSignal<boolean>(true);
   const [binderList, setBinderList] = createSignal<any[]>([]);
   const [selectedBinderCtr, setSelectedBinderCtr] = createSignal<number>(0);
-  const [previouslyMounted, setPreviouslyMounted] =
-    createSignal<boolean>(false);
+  const [stackDataLoaded, setStackDataLoaded] = createSignal<boolean>(false);
 
   //typing for refs
 
@@ -98,18 +97,23 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     }
 
     createEffect(() => {
-      if (stackState().stackMapLoaded) {
+      if (stackState().stackMapLoaded && !stackDataLoaded()) {
         let childrenOfThisStack = stackMap().stackList.filter(
           (stack: any) => stack.name === stackID
         );
         let loadedBinderList = stackMap().binderList.filter((binder: any) =>
           childrenOfThisStack[0].children.includes(binder.name)
         );
+
+        // console.log(loadedBinderList);
+
+        setStackDataLoaded(true);
+
         if (loadedBinderList.length > 0) {
           setBinderList(loadedBinderList);
           setDefaults();
         } else {
-          console.error("No binder list");
+          console.error("No binder list loaded yet");
         }
       }
     });
@@ -387,9 +391,9 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
           setTimeout(loop, 1);
         } else {
           dragToLocked();
-          if (stackDragging() === "locked") {
-            dragToStill();
-          }
+          // if (stackDragging() === "locked") {
+          //   dragToStill();
+          // }
         }
       }
 
@@ -436,6 +440,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
           fallback={<div class={styles.loadingListText}></div>}
         >
           {(binder: any, index: any) => {
+            // console.log(`binders to load`, binder.name);
             return (
               <Binder
                 title={binder.displayName}
@@ -449,6 +454,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
             );
           }}
         </For>
+        <div>{stackID}</div>
       </div>
     </div>
   );
