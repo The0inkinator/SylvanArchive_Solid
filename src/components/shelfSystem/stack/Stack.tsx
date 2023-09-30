@@ -13,6 +13,8 @@ interface StackInputs {
 }
 
 export default function Stack({ stackID, stackNum }: StackInputs) {
+  let thisStack: HTMLDivElement | null = null;
+  let binderContainer: HTMLDivElement | null = null;
   //Property to track the pixel width of cards that the stack is made of
   const [binderSize, setBinderSize] = createSignal<number>(0);
   //Property to track the pixel width of the whole stack
@@ -58,8 +60,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
     createSignal<boolean>(false);
 
   //typing for refs
-  let thisStack: HTMLDivElement | null = null;
-  let binderContainer: HTMLDivElement | null = null;
 
   //Function that: Sets the stack pixel width, Positions the stack in the screen center, sets the collision boundries for the stack
   //Called both on mount and on screen resize

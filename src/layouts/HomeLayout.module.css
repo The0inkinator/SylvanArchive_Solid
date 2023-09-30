@@ -3,10 +3,11 @@
 }
 
 .contentContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* position: relative; */
   overflow: hidden;
+  outline: solid blue;
 }
 
 .overlayGradient {

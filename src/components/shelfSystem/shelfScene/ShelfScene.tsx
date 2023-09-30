@@ -16,6 +16,7 @@ import { useStackMapContext } from "../../../context/StackMapContext";
 import buildStackMap from "./buildStackMap";
 
 export default function ShelfScene() {
+  let shelfSceneContainer: HTMLDivElement | null = null;
   const [stackList, setStackList] = createSignal<any[]>([]);
   const [stackState, { loadStack, closeXStacks, addToStackCount }]: any =
     useStackStateContext();
@@ -80,11 +81,6 @@ export default function ShelfScene() {
       >
         {(stack) => <div class={styles.stackSlider}>{stack()}</div>}
       </For>
-
-      <div
-        class={styles.bottomMargin}
-        style={{ height: `${stackState().shelfHeight}px` }}
-      ></div>
       <Switch fallback={<></>}>
         <Match when={stackState().stackCount > 1}>
           <BackButton />

@@ -1,5 +1,12 @@
 .shelfSceneContainer {
-  margin-top: 12rem;
+  /* margin-top: 12rem; */
+
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  outline: solid red;
 }
 
 .loadingStacksText {
@@ -9,17 +16,11 @@
   font-size: 2rem;
 }
 
-.bottomMargin {
-  width: 100%;
-  pointer-events: none;
-}
-
 .stackSlider {
   height: calc(var(--BinderSize) * 1.6);
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  position: relative;
   overflow: hidden;
 }
