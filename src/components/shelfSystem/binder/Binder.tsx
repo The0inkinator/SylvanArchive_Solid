@@ -164,8 +164,6 @@ export default function Binder({
       (stackToLoad: any) => stackToLoad.name === binderName
     );
 
-    console.log(stackFromBinder[0].children.length);
-
     if (
       stackFromBinder.length === 1 &&
       stackFromBinder[0].children.length > 0
