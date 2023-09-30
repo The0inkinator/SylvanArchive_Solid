@@ -24,58 +24,38 @@ export function StackStateProvider(props: any) {
       stackState,
       {
         changeActiveStack(input: any) {
-          setStackState({
+          setStackState((prevState) => ({
+            ...prevState,
             activeStack: input,
-            loadingStack: stackState().loadingStack,
-            stackCount: stackState().stackCount,
-            stacksToClose: stackState().stacksToClose,
-            shelfHeight: stackState().shelfHeight,
-            stackMapLoaded: stackState().stackMapLoaded,
-          });
+          }));
         },
         loadStack(inputPath: string | "none") {
-          setStackState({
-            activeStack: stackState().activeStack,
+          setStackState((prevState) => ({
+            ...prevState,
             loadingStack: inputPath,
-            stackCount: stackState().stackCount,
-            stacksToClose: stackState().stacksToClose,
-            shelfHeight: stackState().shelfHeight,
-            stackMapLoaded: stackState().stackMapLoaded,
-          });
+          }));
         },
         addToStackCount(inputNumber: number) {
           const newStackCount = stackState().stackCount + inputNumber;
-          setStackState({
-            activeStack: stackState().activeStack,
-            loadingStack: stackState().loadingStack,
+          setStackState((prevState) => ({
+            ...prevState,
             stackCount: newStackCount,
-            stacksToClose: stackState().stacksToClose,
-            shelfHeight: stackState().shelfHeight,
-            stackMapLoaded: stackState().stackMapLoaded,
-          });
+          }));
         },
         closeXStacks(inputNumber: number) {
-          setStackState({
-            activeStack: stackState().activeStack,
-            loadingStack: stackState().loadingStack,
-            stackCount: stackState().stackCount,
+          setStackState((prevState) => ({
+            ...prevState,
             stacksToClose: inputNumber,
-            shelfHeight: stackState().shelfHeight,
-            stackMapLoaded: stackState().stackMapLoaded,
-          });
+          }));
         },
         setShelfHeight(inputNumber: number) {
           stackState().shelfHeight = inputNumber;
         },
         updateStackMapLoadStatus(input: boolean) {
-          setStackState({
-            activeStack: stackState().activeStack,
-            loadingStack: stackState().loadingStack,
-            stackCount: stackState().stackCount,
-            stacksToClose: stackState().stacksToClose,
-            shelfHeight: stackState().shelfHeight,
+          setStackState((prevState) => ({
+            ...prevState,
             stackMapLoaded: input,
-          });
+          }));
         },
       },
     ];

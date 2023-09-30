@@ -16,16 +16,16 @@ export function BinderStateProvider(props: any) {
       binderState,
       {
         setSelectedBinder(inputNumber: number) {
-          setBinderState({
-            hoveredBinder: binderState().hoveredBinder,
+          setBinderState((prevState) => ({
+            ...prevState,
             selectedBinder: inputNumber,
-          });
+          }));
         },
         setHoveredBinder(inputNumber: number) {
-          setBinderState({
+          setBinderState((prevState) => ({
+            ...prevState,
             hoveredBinder: inputNumber,
-            selectedBinder: binderState().selectedBinder,
-          });
+          }));
         },
       },
     ];

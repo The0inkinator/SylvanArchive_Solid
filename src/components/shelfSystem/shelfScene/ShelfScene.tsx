@@ -116,15 +116,23 @@ export default function ShelfScene() {
       if (stackState().stacksToClose > 0) {
         closeStacks(stackState().stacksToClose);
         setTimeout(loop, 100);
-      } else if (stackState().loadingStack !== "none") {
-        newShelf(stackState().loadingStack);
-        setTimeout(loop, 100);
-      } else {
+      }
+      // else if (stackState().loadingStack !== "none") {
+      //   newShelf(stackState().loadingStack);
+      //   setTimeout(loop, 100);
+      // }
+      else {
         setTimeout(loop, 100);
       }
     }
     loop();
   };
+
+  createEffect(() => {
+    if (stackState().loadingStack !== "none") {
+      newShelf(stackState().loadingStack);
+    }
+  });
 
   return (
     <div
