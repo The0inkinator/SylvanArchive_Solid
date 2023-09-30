@@ -7,7 +7,6 @@ interface stackInfo {
   loadingStack: string | "none";
   stackCount: number;
   stacksToClose: number;
-  shelfHeight: number;
   stackMapLoaded: boolean;
 }
 
@@ -17,7 +16,6 @@ export function StackStateProvider(props: any) {
       loadingStack: "none",
       stackCount: 1,
       stacksToClose: 0,
-      shelfHeight: 0,
       stackMapLoaded: false,
     }),
     stackStateList = [
@@ -47,9 +45,6 @@ export function StackStateProvider(props: any) {
             ...prevState,
             stacksToClose: inputNumber,
           }));
-        },
-        setShelfHeight(inputNumber: number) {
-          stackState().shelfHeight = inputNumber;
         },
         updateStackMapLoadStatus(input: boolean) {
           setStackState((prevState) => ({
