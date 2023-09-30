@@ -38,8 +38,6 @@ export default function ShelfScene() {
       <Stack stackID="starting_none" stackNum={stackState().stackCount} />,
     ]);
 
-    updateStacks();
-
     setMargins();
   });
 
@@ -57,7 +55,6 @@ export default function ShelfScene() {
 
   createEffect(() => {
     if (currentStackCount !== stackState().stackCount) {
-      console.log("stack count has changed");
       currentStackCount = stackState().stackCount;
     }
   });
@@ -111,22 +108,11 @@ export default function ShelfScene() {
     dragToStill();
   }
 
-  const updateStacks = () => {
-    function loop() {
-      if (stackState().stacksToClose > 0) {
-        closeStacks(stackState().stacksToClose);
-        setTimeout(loop, 100);
-      }
-      // else if (stackState().loadingStack !== "none") {
-      //   newShelf(stackState().loadingStack);
-      //   setTimeout(loop, 100);
-      // }
-      else {
-        setTimeout(loop, 100);
-      }
+  createEffect(() => {
+    if (stackState().stacksToClose > 0) {
+      closeStacks(stackState().stacksToClose);
     }
-    loop();
-  };
+  });
 
   createEffect(() => {
     if (stackState().loadingStack !== "none") {
