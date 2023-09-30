@@ -57,7 +57,10 @@ export default function Binder({
   let bgCardPositions: string[] = ["translate(-50%, -50%)"];
   let bgCardRotation: number = 0;
   let bgCardSize: number = 65;
-  let binderOutput: binderOutput;
+  let binderOutput: binderOutput = {
+    outputName: "nothingHereYet_none",
+    outputType: binderChildType,
+  };
 
   //State to asynchronously pass elements card art/images
   const [displayArtUrl, setDisplayArtUrl] = createSignal<string | null>(null);
@@ -161,9 +164,12 @@ export default function Binder({
       (stackToLoad: any) => stackToLoad.name === binderName
     );
 
-    if (stackFromBinder.length !== 1) {
-      binderOutput = { outputName: "nothingHereYet", outputType: "newStack" };
-    } else {
+    console.log(stackFromBinder[0].children.length);
+
+    if (
+      stackFromBinder.length === 1 &&
+      stackFromBinder[0].children.length > 0
+    ) {
       const nameToLoad = stackFromBinder[0].name;
       const typeToLoad = binderChildType;
       binderOutput = { outputName: nameToLoad, outputType: typeToLoad };

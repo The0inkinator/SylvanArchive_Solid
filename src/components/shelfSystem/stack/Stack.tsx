@@ -105,7 +105,9 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
           childrenOfThisStack[0].children.includes(binder.name)
         );
 
-        // console.log(loadedBinderList);
+        const errorBinder = stackMap().binderList.filter(
+          (binder: any) => binder.name === "nothingHereYet_none"
+        );
 
         setStackDataLoaded(true);
 
@@ -113,7 +115,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
           setBinderList(loadedBinderList);
           setDefaults();
         } else {
-          console.error("No binder list loaded yet");
+          setBinderList(errorBinder);
+          setDefaults();
         }
       }
     });
@@ -454,7 +457,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
             );
           }}
         </For>
-        <div>{stackID}</div>
       </div>
     </div>
   );
