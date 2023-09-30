@@ -119,18 +119,6 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
       });
     });
 
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("touchstart", handleTouchStart);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove, {
-      passive: false,
-      capture: true,
-    });
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("touchend", handleTouchEnd);
-    window.addEventListener("dblclick", handleDoubleClick);
-
     createEffect(() => {
       if (thisStack) {
         if (stackState().stackCount === stackNum && !thisStackActive) {
@@ -153,17 +141,29 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
         }
       }
     });
+
+    window.addEventListener("scroll", handleScroll);
+    if (thisStack) thisStack.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+      capture: true,
+    });
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchend", handleTouchEnd);
+    if (thisStack) thisStack.addEventListener("dblclick", handleDoubleClick);
   });
 
   onCleanup(() => {
     window.removeEventListener("scroll", handleScroll);
-    window.removeEventListener("mousedown", handleMouseDown);
+    if (thisStack) thisStack.removeEventListener("mousedown", handleMouseDown);
     window.removeEventListener("touchstart", handleTouchStart);
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("touchmove", handleTouchMove);
     window.removeEventListener("mouseup", handleMouseUp);
     window.removeEventListener("touchend", handleTouchEnd);
-    window.removeEventListener("dblclick", handleDoubleClick);
+    if (thisStack) thisStack.removeEventListener("dblclick", handleDoubleClick);
   });
 
   const handleScroll = (event: any) => {
@@ -181,15 +181,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   const handleMouseDown = (event: MouseEvent) => {
     if (thisStack) {
-      const componentRect = thisStack.getBoundingClientRect();
-
-      if (
-        thisStackActive &&
-        event.clientX >= componentRect.left &&
-        event.clientX <= componentRect.right &&
-        event.clientY >= componentRect.top &&
-        event.clientY <= componentRect.bottom
-      ) {
+      if (thisStackActive) {
         localStackDragging = true;
         slideCheck();
         stackOffsetX = event.clientX - stackPosition();
@@ -277,7 +269,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   };
 
   const handleDoubleClick = (event: MouseEvent) => {
-    if (thisStackActive && stackHovered) {
+    if (thisStackActive) {
       slideCheck();
     }
     if (canSlide && stackDragging() === "still") {
