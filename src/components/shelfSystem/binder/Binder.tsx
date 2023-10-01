@@ -52,24 +52,7 @@ export default function Binder({
   binderParentElement,
   binderChildType,
 }: BinderInputs) {
-  //Empty styling properties for bgCards
-  let bgCardArray: any[] = [];
-  let bgCardPositions: string[] = ["translate(-50%, -50%)"];
-  let bgCardRotation: number = 0;
-  let bgCardSize: number = 65;
-  let binderOutput: binderOutput = {
-    outputName: "nothingHereYet_none",
-    outputType: binderChildType,
-  };
-
-  //State to asynchronously pass elements card art/images
-  const [displayArtUrl, setDisplayArtUrl] = createSignal<string | null>(null);
-  const [bgCardUrls, setBgCardUrls] = createSignal<any>([]);
-  const [bgCardsLoaded, setBgCardsLoaded] = createSignal<boolean>(false);
-  //State to handle all visual edits to binder when it is "active"
-  const [binderActive, setBinderActive] = createSignal<boolean>(false);
-  const [binderVisible, setBinderVisible] = createSignal<boolean>(false);
-  //Shelf contexts
+  //Context States
   const [
     binderState,
     { setSelectedBinder, setHoveredBinder, setWaitingToLoad },
@@ -78,17 +61,32 @@ export default function Binder({
     useStackStateContext();
   const [stackMap]: any = useStackMapContext();
   const [stackDragging, { dragToStill }]: any = useStackDraggingContext();
+
+  //State
+  const [displayArtUrl, setDisplayArtUrl] = createSignal<string | null>(null);
+  const [bgCardUrls, setBgCardUrls] = createSignal<any>([]);
+  const [bgCardsLoaded, setBgCardsLoaded] = createSignal<boolean>(false);
+  const [binderActive, setBinderActive] = createSignal<boolean>(false);
+  const [binderVisible, setBinderVisible] = createSignal<boolean>(false);
+  const [binderAnimating, setBinderAnimating] = createSignal<boolean>(true);
   const [thisBinderSelected, setThisBinderSelected] = createSignal<
     true | false | "waiting"
   >(false);
-  const [binderAnimating, setBinderAnimating] = createSignal<boolean>(true);
+  const [parentActive, setParentActive] = createSignal<boolean>(true);
 
-  //Define Unique HTML Elements ro reference
+  //Ref Variables
   let binderContainer: HTMLDivElement | null = null;
   let thisBinder: HTMLDivElement | null = null;
-  //Define Empty functions to define on mount
-  let handleHover: Function;
-  let handleHoverOut: Function;
+
+  //BgCard styling Variables
+  let bgCardArray: any[] = [];
+  let bgCardPositions: string[] = ["translate(-50%, -50%)"];
+  let bgCardRotation: number = 0;
+  let bgCardSize: number = 65;
+  let binderOutput: binderOutput = {
+    outputName: "nothingHereYet_none",
+    outputType: binderChildType,
+  };
 
   //Inputs primary display art
   createEffect(async () => {
@@ -224,21 +222,24 @@ export default function Binder({
       }
       loop();
     }
-    if (
-      stackDragging() === "still" &&
-      stackState().activeStack === binderParentElement
-    ) {
+    if (stackDragging() === "still" && parentActive()) {
       setSelectedBinder(binderNum);
       if (!loadStackRunning) loadStackFromBinder();
     }
   };
 
   //HANDLE BINDER VISUALS
+
   createEffect(() => {
-    if (
-      binderState().selectedBinder > 0 &&
-      stackState().activeStack === binderParentElement
-    ) {
+    if (stackState().activeStack === binderParentElement) {
+      setParentActive(true);
+    } else {
+      setParentActive(false);
+    }
+  });
+
+  createEffect(() => {
+    if (binderState().selectedBinder > 0 && parentActive()) {
       if (binderState().selectedBinder === binderNum) {
         setThisBinderSelected(true);
       } else {
@@ -249,10 +250,7 @@ export default function Binder({
 
   createEffect(() => {
     if (!binderAnimating()) {
-      if (
-        stackState().activeStack === binderParentElement &&
-        binderState().selectedBinder === 0
-      ) {
+      if (parentActive() && binderState().selectedBinder === 0) {
         setBinderVisible(true);
       } else if (thisBinderSelected() !== false) {
         setBinderVisible(true);
@@ -263,13 +261,13 @@ export default function Binder({
   });
 
   createEffect(() => {
-    if (stackState().activeStack === binderParentElement) {
+    if (parentActive()) {
       setThisBinderSelected(false);
     }
   });
 
   createEffect(() => {
-    if (stackState().activeStack === binderParentElement) {
+    if (parentActive()) {
       if (
         binderState().hoveredBinder === binderNum &&
         binderState().selectedBinder === 0
@@ -285,7 +283,7 @@ export default function Binder({
 
   createEffect(() => {
     if (
-      stackState().activeStack === binderParentElement &&
+      parentActive() &&
       stackDragging() === "dragging" &&
       thisBinderSelected()
     ) {
@@ -305,12 +303,12 @@ export default function Binder({
           setBinderActive(false);
         }}
         onmouseenter={() => {
-          if (stackState().activeStack === binderParentElement) {
+          if (parentActive()) {
             setHoveredBinder(binderNum);
           }
         }}
         onmouseleave={() => {
-          if (stackState().activeStack === binderParentElement) {
+          if (parentActive()) {
             setHoveredBinder(0);
           }
         }}
@@ -320,7 +318,7 @@ export default function Binder({
         }}
       >
         <div
-          tabindex="0"
+          tabindex={binderActive() ? "-1" : "0"}
           ref={(el) => (thisBinder = el)}
           class={`${styles.binder} ${
             binderActive() ? styles.binderActive : ""
