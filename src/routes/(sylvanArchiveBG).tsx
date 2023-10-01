@@ -1,5 +1,5 @@
 import { Outlet } from "solid-start";
-import "../layouts/";
+import "../layouts/SylvanArchiveBG.module.css";
 
 export default function baseLayout() {
   return (
