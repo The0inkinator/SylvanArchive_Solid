@@ -1,7 +1,6 @@
-import styles from "../layouts/HomeLayout.module.css";
-import FrontPageHeader from "../components/layoutComponents/frontPageHeader/FrontPageHeader";
-import ShelfScene from "../components/shelfSystem/shelfScene/ShelfScene";
-//vercel commit
+import styles from "../../layouts/HomeLayout.module.css";
+import FrontPageHeader from "../../components/layoutComponents/frontPageHeader/FrontPageHeader";
+import ShelfScene from "../../components/shelfSystem/shelfScene/ShelfScene";
 
 export default function Home() {
   return (
