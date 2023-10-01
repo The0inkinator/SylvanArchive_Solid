@@ -5,12 +5,14 @@ const BinderStateContext = createContext();
 interface binderInfo {
   hoveredBinder: number;
   selectedBinder: number;
+  waitingToLoad: boolean;
 }
 
 export function BinderStateProvider(props: any) {
   const [binderState, setBinderState] = createSignal<binderInfo>({
       hoveredBinder: 0,
       selectedBinder: 0,
+      waitingToLoad: false,
     }),
     binderStateList = [
       binderState,
@@ -25,6 +27,12 @@ export function BinderStateProvider(props: any) {
           setBinderState((prevState) => ({
             ...prevState,
             hoveredBinder: inputNumber,
+          }));
+        },
+        setWaitingToLoad(input: boolean) {
+          setBinderState((prevState) => ({
+            ...prevState,
+            waitingToLoad: input,
           }));
         },
       },

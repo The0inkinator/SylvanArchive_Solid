@@ -70,8 +70,10 @@ export default function Binder({
   const [binderActive, setBinderActive] = createSignal<boolean>(false);
   const [binderVisible, setBinderVisible] = createSignal<boolean>(false);
   //Shelf contexts
-  const [binderState, { setSelectedBinder, setHoveredBinder }]: any =
-    useBinderStateContext();
+  const [
+    binderState,
+    { setSelectedBinder, setHoveredBinder, setWaitingToLoad },
+  ]: any = useBinderStateContext();
   const [stackState, { changeActiveStack, loadStack }]: any =
     useStackStateContext();
   const [stackMap]: any = useStackMapContext();
@@ -195,29 +197,65 @@ export default function Binder({
   });
 
   const handleDoubleClick = (event: MouseEvent) => {
-    if (stackDragging() === "still") {
-      setSelectedBinder(binderNum);
-    }
-
+    let loadStackRunning: boolean = false;
     function loadStackFromBinder() {
+      let timer: number = 2000;
+      loadStackRunning = true;
       function loop() {
-        if (stackDragging() !== "locked") {
-          setTimeout(loop, 1);
-        } else {
+        if (
+          binderState().waitingToLoad &&
+          stackDragging() !== "locked" &&
+          binderState().selectedBinder === binderNum
+        ) {
+          setWaitingToLoad(false);
           if (binderOutput.outputType === "newStack") {
-            loadStack(binderOutput.outputName);
+            binderOutput.outputName = loadStack(binderOutput.outputName);
           } else if (binderOutput.outputType === "cardList") {
             console.log("new card List");
           } else {
             console.log("endpoint");
           }
+        } else {
+          if (timer > 0) {
+            timer = timer - 1;
+            setTimeout(loop, 1);
+          } else console.log("loopEnded");
         }
       }
       loop();
     }
-
-    loadStackFromBinder();
+    if (
+      stackDragging() === "still" &&
+      stackState().activeStack === binderParentElement
+    ) {
+      setSelectedBinder(binderNum);
+      if (!loadStackRunning) loadStackFromBinder();
+    }
   };
+
+  // createEffect(() => {
+  //   if (
+  //     binderState().waitingToLoad &&
+  //     stackDragging() !== "locked" &&
+  //     binderState().selectedBinder === binderNum
+  //   ) {
+  //     setWaitingToLoad(false);
+  //     if (binderOutput.outputType === "newStack") {
+  //       binderOutput.outputName = loadStack(binderOutput.outputName);
+  //     } else if (binderOutput.outputType === "cardList") {
+  //       console.log("new card List");
+  //     } else {
+  //       console.log("endpoint");
+  //     }
+  //   }
+  // });
+
+  function thunkLoadStack() {
+    (() => {
+      console.log(binderOutput.outputName);
+    })();
+    // loadStack();
+  }
 
   //HANDLE BINDER VISUALS
   createEffect(() => {
@@ -278,42 +316,6 @@ export default function Binder({
       setThisBinderSelected(false);
     }
   });
-
-  // createEffect(() => {
-  //   if (
-  //     stackDragging() === "locked" &&
-  //     binderState().selectedBinder === binderNum
-  //   ) {
-  //     console.log(`%c ${binderOutput}`, "color: green");
-  //     dragToStill();
-  //     loadStackFromBinder();
-  //   }
-  // });
-
-  // const loadStackFromBinder = () => {
-  //   const stackFromBinder = stackMap().stackList.filter(
-  //     (stackToLoad: any) => stackToLoad.name === binderName
-  //   );
-
-  //   if (stackFromBinder.length !== 1) {
-  //     console.error("Single stack target not found");
-  //     loadStack(`nothingHereYet_none`);
-  //   } else {
-  //     const nameToLoad = stackFromBinder[0].name;
-  //     const typeToLoad = binderChildType;
-  //     console.log(`The stack about to load is ${nameToLoad}`);
-
-  //     if (typeToLoad === "newStack") {
-  //       console.log("newStack");
-  //       loadStack(`${nameToLoad}`);
-  //     } else if (typeToLoad === "cardList") {
-  //       console.log("cardList");
-  //     } else {
-  //       console.log("Error or empty");
-  //       loadStack(`nothingHereYet_none`);
-  //     }
-  //   }
-  // };
 
   return (
     <>
