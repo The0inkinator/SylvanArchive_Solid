@@ -209,7 +209,7 @@ export default function Binder({
         ) {
           setWaitingToLoad(false);
           if (binderOutput.outputType === "newStack") {
-            binderOutput.outputName = loadStack(binderOutput.outputName);
+            loadStack(binderOutput.outputName);
           } else if (binderOutput.outputType === "cardList") {
             console.log("new card List");
           } else {
@@ -232,30 +232,6 @@ export default function Binder({
       if (!loadStackRunning) loadStackFromBinder();
     }
   };
-
-  // createEffect(() => {
-  //   if (
-  //     binderState().waitingToLoad &&
-  //     stackDragging() !== "locked" &&
-  //     binderState().selectedBinder === binderNum
-  //   ) {
-  //     setWaitingToLoad(false);
-  //     if (binderOutput.outputType === "newStack") {
-  //       binderOutput.outputName = loadStack(binderOutput.outputName);
-  //     } else if (binderOutput.outputType === "cardList") {
-  //       console.log("new card List");
-  //     } else {
-  //       console.log("endpoint");
-  //     }
-  //   }
-  // });
-
-  function thunkLoadStack() {
-    (() => {
-      console.log(binderOutput.outputName);
-    })();
-    // loadStack();
-  }
 
   //HANDLE BINDER VISUALS
   createEffect(() => {
