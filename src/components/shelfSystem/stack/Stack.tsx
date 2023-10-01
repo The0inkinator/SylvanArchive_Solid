@@ -147,7 +147,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
     window.addEventListener("scroll", handleScroll);
     if (thisStack) thisStack.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("touchstart", handleTouchStart);
+    if (thisStack) thisStack.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("touchmove", handleTouchMove, {
       passive: false,
@@ -161,7 +161,8 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   onCleanup(() => {
     window.removeEventListener("scroll", handleScroll);
     if (thisStack) thisStack.removeEventListener("mousedown", handleMouseDown);
-    window.removeEventListener("touchstart", handleTouchStart);
+    if (thisStack)
+      thisStack.removeEventListener("touchstart", handleTouchStart);
     window.removeEventListener("mousemove", handleMouseMove);
     window.removeEventListener("touchmove", handleTouchMove);
     window.removeEventListener("mouseup", handleMouseUp);
@@ -191,19 +192,10 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
   };
 
   const handleTouchStart = (event: TouchEvent) => {
-    if (thisStack && event.touches.length === 1) {
-      const componentRect = thisStack.getBoundingClientRect();
-
-      if (
-        thisStackActive &&
-        event.touches[0].clientX >= componentRect.left &&
-        event.touches[0].clientX <= componentRect.right &&
-        event.touches[0].clientY >= componentRect.top &&
-        event.touches[0].clientY <= componentRect.bottom
-      ) {
-        localStackDragging = true;
-        stackOffsetX = event.touches[0].clientX - stackPosition();
-      }
+    if (thisStack && thisStackActive && event.touches.length === 1) {
+      localStackDragging = true;
+      stackOffsetX = event.touches[0].clientX - stackPosition();
+      document.body.style.cursor = "grabbing";
     }
   };
 
@@ -223,11 +215,7 @@ export default function Stack({ stackID, stackNum }: StackInputs) {
 
   const handleTouchMove = (event: TouchEvent) => {
     if (thisStackActive) {
-      if (
-        localStackDragging &&
-        stackDragging() !== "dragging" &&
-        stackDragging() !== "drifting"
-      ) {
+      if (localStackDragging && stackDragging() !== "locked") {
         dragToDragging();
         drift();
       }
