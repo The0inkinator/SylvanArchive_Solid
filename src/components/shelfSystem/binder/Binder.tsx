@@ -19,6 +19,7 @@ import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
 import { useStackMapContext } from "~/context/StackMapContext";
+import { useNavigate } from "solid-start";
 
 //TYPING
 interface CardFetcherInputs {
@@ -73,6 +74,7 @@ export default function Binder({
     true | false | "waiting"
   >(false);
   const [parentActive, setParentActive] = createSignal<boolean>(true);
+  const linkTo = useNavigate();
 
   //Ref Variables
   let binderContainer: HTMLDivElement | null = null;
@@ -210,6 +212,7 @@ export default function Binder({
             loadStack(binderOutput.outputName);
           } else if (binderOutput.outputType === "cardList") {
             console.log("new card List");
+            linkTo(`/cardLists/${binderOutput.outputName}`);
           } else {
             console.log("endpoint");
           }
