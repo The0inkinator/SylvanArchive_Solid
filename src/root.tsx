@@ -17,7 +17,6 @@ import { StackDraggingProvider } from "./context/StackDraggingContext";
 import { BinderStateProvider } from "./context/BinderStateContext";
 import { StackStateProvider } from "./context/StackStateContext";
 import { StackMapProvider } from "./context/StackMapContext";
-import styles from "./layouts/SylvanArchiveBG.module.css";
 
 export default function Root() {
   return (
