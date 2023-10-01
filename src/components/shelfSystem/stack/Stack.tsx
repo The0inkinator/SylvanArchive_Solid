@@ -5,7 +5,6 @@ import { useStackDraggingContext } from "../../../context/StackDraggingContext";
 import { useBinderStateContext } from "../../../context/BinderStateContext";
 import { useStackStateContext } from "../../../context/StackStateContext";
 import { useStackMapContext } from "../../../context/StackMapContext";
-import BackBinder from "../backBinder/BackBinder";
 
 interface StackInputs {
   stackID: string;
