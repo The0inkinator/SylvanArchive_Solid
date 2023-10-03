@@ -166,10 +166,7 @@ export default function Binder({
       (stackToLoad: any) => stackToLoad.name === binderName
     );
 
-    if (
-      stackFromBinder.length === 1 &&
-      stackFromBinder[0].children.length > 0
-    ) {
+    if (stackFromBinder.length === 1) {
       const nameToLoad = stackFromBinder[0].name;
       const typeToLoad = binderChildType;
       binderOutput = { outputName: nameToLoad, outputType: typeToLoad };
@@ -211,7 +208,6 @@ export default function Binder({
           if (binderOutput.outputType === "newStack") {
             loadStack(binderOutput.outputName);
           } else if (binderOutput.outputType === "cardList") {
-            console.log("new card List");
             linkTo(`/cardLists/${binderOutput.outputName}`);
           } else {
             console.log("endpoint");

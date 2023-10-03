@@ -17,6 +17,7 @@ import { StackDraggingProvider } from "./context/StackDraggingContext";
 import { BinderStateProvider } from "./context/BinderStateContext";
 import { StackStateProvider } from "./context/StackStateContext";
 import { StackMapProvider } from "./context/StackMapContext";
+import { CardListProvider } from "./context/CardListContext";
 
 export default function Root() {
   return (
@@ -53,9 +54,11 @@ export default function Root() {
               <BinderStateProvider binderStateList={0}>
                 <StackStateProvider stackStateList={null}>
                   <StackMapProvider stackMapState={null}>
-                    <Routes>
-                      <FileRoutes />
-                    </Routes>
+                    <CardListProvider cardListState={null}>
+                      <Routes>
+                        <FileRoutes />
+                      </Routes>
+                    </CardListProvider>
                   </StackMapProvider>
                 </StackStateProvider>
               </BinderStateProvider>
