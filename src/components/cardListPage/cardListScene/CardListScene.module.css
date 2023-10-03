@@ -14,7 +14,7 @@
   align-items: center;
   width: 80vw;
   min-height: 80vw;
-  border-radius: 2%;
+  clip-path: inset(0% round 20px 20px 20px 20px);
 }
 
 .cardList {
