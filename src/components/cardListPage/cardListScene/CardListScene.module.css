@@ -1,0 +1,13 @@
+.cardListContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 100vw;
+  min-height: 100vw;
+}
+
+.cardListBackdrop {
+  background-color: white;
+  width: 80vw;
+  min-height: 80vw;
+}
