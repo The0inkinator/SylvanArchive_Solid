@@ -1,14 +1,26 @@
 import { CardFetcher } from "~/fetchers/ScryfallAPIFetcher";
 import { createEffect, createSignal } from "solid-js";
+import styles from "./Card.module.css";
 
-export default function Card(image: string) {
+interface cardInputs {
+  image: string;
+}
+
+export default function Card({ image }: cardInputs) {
   const [cardArt, setCardArt] = createSignal<string | null>();
 
   createEffect(async () => {
-    CardFetcher(image);
+    const loadedArt = await CardFetcher(image);
+
+    setCardArt(loadedArt);
   });
 
   return (
-    <div style={{ "background-image": cardArt() ? `${cardArt()}` : "" }}></div>
+    <div
+      class={styles.card}
+      style={{
+        "background-image": cardArt() ? `url(${cardArt()})` : "none",
+      }}
+    ></div>
   );
 }

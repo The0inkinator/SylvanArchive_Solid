@@ -1,0 +1,8 @@
+.card {
+  height: 15rem;
+  width: 10.5rem;
+  background: center;
+  background-size: cover;
+  margin: 5px;
+  clip-path: inset(0% round 10px 10px 10px 10px);
+}
