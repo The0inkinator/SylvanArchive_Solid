@@ -4,10 +4,15 @@ import cardListFetcher from "../../../components/cardListPage/cardListFetcher";
 import CardListScene from "~/components/cardListPage/cardListScene/CardListScene";
 import server$ from "solid-start/server";
 import { MongoClient } from "mongodb";
+import { createEffect } from "solid-js";
+import { useCardListContext } from "~/context/CardListContext";
 
 export default function cardListPage() {
+  const [cardList, { makeCardList }]: any = useCardListContext();
   const pathInput = useParams();
   cardListFetcher(`${pathInput.cardList}`);
+  let insertDataHere: any;
+
   const data = server$(async () => {
     const uri =
       "mongodb+srv://SylvanArchiveAPI:getAPIPass@sylvanarchivedb.zodmskg.mongodb.net/";
@@ -19,7 +24,6 @@ export default function cardListPage() {
       const binders = db.collection("binders");
       const cursor = binders.find({});
       const bindersData = await cursor.toArray();
-      console.log(bindersData);
       await client.close();
       console.log("Connection closed");
 
@@ -28,6 +32,12 @@ export default function cardListPage() {
       console.error("Error connecting to database", err);
     }
   });
+
+  data();
+
+  // createEffect(async () => {
+  //   console.log(data());
+  // });
   return (
     <>
       <FrontPageHeader />
