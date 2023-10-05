@@ -4,7 +4,7 @@ const uri =
   "mongodb+srv://SylvanArchiveAPI:getAPIPass@sylvanarchivedb.zodmskg.mongodb.net/";
 const client = new MongoClient(uri);
 
-async function connectToDB() {
+export async function connectToDB() {
   try {
     await client.connect();
     const db = client.db("sylvanArchiveDB");
@@ -15,6 +15,8 @@ async function connectToDB() {
     console.log(bindersData);
     await client.close();
     console.log("Connection closed");
+
+    return bindersData;
   } catch (err) {
     console.error("Error connecting to database", err);
   }
