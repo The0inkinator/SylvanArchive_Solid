@@ -10,7 +10,6 @@ interface cardInfo {
 
 export default function CardListScene() {
   const [cardList]: any = useCardListContext();
-  console.log(cardList());
   return (
     <div class={styles.cardListContainer}>
       <div class={styles.cardListBackdrop}>

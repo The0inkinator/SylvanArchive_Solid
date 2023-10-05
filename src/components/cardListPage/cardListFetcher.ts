@@ -18,7 +18,6 @@ export default async function cardListFetcher(cardListPath: string) {
     );
 
     makeCardList(finalList);
-    console.log(cardList());
   } catch (err) {
     console.log(err);
   }

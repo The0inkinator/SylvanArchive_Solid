@@ -1,7 +1,7 @@
-import { connectToDB } from "../../backend/dbConnect";
+import server$ from "solid-start/server";
 
 export function GET() {
-  const data = connectToDB();
+  const data = { 1: 1 };
 
   const json = JSON.stringify(data);
 

@@ -1,10 +1,9 @@
 import { MongoClient } from "mongodb";
 
-const uri =
-  "mongodb+srv://SylvanArchiveAPI:getAPIPass@sylvanarchivedb.zodmskg.mongodb.net/";
-const client = new MongoClient(uri);
-
 export async function connectToDB() {
+  const uri =
+    "mongodb+srv://SylvanArchiveAPI:getAPIPass@sylvanarchivedb.zodmskg.mongodb.net/";
+  const client = new MongoClient(uri);
   try {
     await client.connect();
     const db = client.db("sylvanArchiveDB");
