@@ -1,3 +1,11 @@
 export function GET() {
-  return new Response("Hello World");
+  const data = { image: "example.jpg" };
+
+  const json = JSON.stringify(data);
+
+  return new Response(json, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
